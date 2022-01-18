@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-//import { Story } from '../../models/story';
+import Quill from 'quill'
+import { Story } from '../../models/story';
 
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.css']
 })
+
 export class PageComponent implements OnInit {
 
   //story: Story = new Story();
 
-  model: string = '';
+  story: Story = new Story();
 
-  modules: {
+  quillToolbar = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
       ['blockquote'],
