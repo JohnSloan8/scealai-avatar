@@ -10,6 +10,7 @@ export class Story extends Serializable {
     htmlText: string;
     author: string;
     studentId: string;
+    wordCount: number;
     feedback: {
         seenByStudent: boolean;
         text: string;

@@ -5,7 +5,6 @@ import { QuillModule } from 'ngx-quill'
 import { AppComponent } from './app.component';
 import { PageComponent } from './page/page.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-import { FormatterComponent } from './formatter/formatter.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 
@@ -13,14 +12,13 @@ import { FormsModule } from '@angular/forms';
   declarations: [
     AppComponent,
     PageComponent,
-    ToolbarComponent,
-    FormatterComponent
+    ToolbarComponent
   ],
   imports: [
     BrowserModule,
     FontAwesomeModule,
     FormsModule,
-    QuillModule
+    QuillModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

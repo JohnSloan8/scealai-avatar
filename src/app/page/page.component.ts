@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import Quill from 'quill'
+//import Quill from 'quill'
 import { Story } from '../../models/story';
+import { quillToolbar } from './quillConfig'
+import { getWordCount, addIds } from './utils'
 
 @Component({
   selector: 'app-page',
@@ -10,37 +12,32 @@ import { Story } from '../../models/story';
 
 export class PageComponent implements OnInit {
 
-  //story: Story = new Story();
-
   story: Story = new Story();
 
-  quillToolbar = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-      ['blockquote'],
+  quillToolbar = quillToolbar;
 
-      // [{'header': 1}, {'header': 2}],               // custom button values
-      [{'list': 'ordered'}, {'list': 'bullet'}],
-      [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
-      [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
-      [{'direction': 'rtl'}],                         // text direction
+  storyEdited(q: any) {
+    var x = document.getElementsByClassName("ql-editor");
+    console.log('childnodes:', x[0].children)
+    Array.from(x[0].children).forEach((c, i) => {
+      c.id = "sent_" + i
+    })
+    this.story.text = q.text;
+    //this.textUpdated.next(q.text);
+    this.story.wordCount = getWordCount(q.text);
+    //this.storyEdited = this.storyEditedAlt;
+  }
 
-      // [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
-      // [{'header': [1, 2, 3, 4, 5, 6, false]}],
+  //storyEditedAlt(q: any) {
+    //this.story.text = q.text;
+    //this.textUpdated.next(q.text);
+    //this.getWordCount(q.text);
+    //this.storySaved = false;
+    //this.debounceSaveStory();
+  //}
 
-      // [{'color': []}, {'background': []}],          // dropdown with defaults from theme
-      // [{'font': []}],
-      [{'align': []}],
-
-      ['clean'],                                       // remove formatting button
-
-      // ['link', 'image', 'video',]                   // link and image, video
-      ['link']                                         // link
-
-    ]
-  };
-
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
