@@ -1,0 +1,19 @@
+<div class="quill-container">
+  <quill-editor
+    theme="snow"
+    [modules]="quillToolbar"
+    [(ngModel)]="story.htmlText"
+    [preserveWhitespace]="true"
+    (onContentChanged)="storyEdited($event);"
+    [styles]="{height: '50%;'}"
+    >
+  </quill-editor>
+
+  <!--<div -->
+    <!--[innerHTML]="story.htmlText"-->
+    <!-->-->
+  <!--</div>-->
+
+  <!--{{ story.htmlText }}-->
+
+</div>

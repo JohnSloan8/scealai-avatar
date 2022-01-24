@@ -1,18 +1,9 @@
-<div style="height: 100px;">
-<quill-editor
-  theme="snow"
-  [modules]="quillToolbar"
-  [(ngModel)]="story.htmlText"
-  [preserveWhitespace]="true"
-  (onContentChanged)="storyEdited($event);"
-  >
-</quill-editor>
-
-<div 
-  [innerHTML]="story.htmlText"
-  >
-</div>
-
-  {{ story.htmlText }}
-
+<div class="row page-audio-row">
+  <div class="col-sm">
+    <app-quill-editor></app-quill-editor>
+  </div>
+  <div class="col-sm test-box-r audio-bar-container">
+    <app-audio-bar></app-audio-bar>
+  </div>
+  <!--<app-toolbar></app-toolbar>-->
 </div>

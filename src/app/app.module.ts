@@ -7,12 +7,18 @@ import { PageComponent } from './page/page.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
+import { QuillEditorComponent } from './quill-editor/quill-editor.component';
+import { AudioBarComponent } from './audio-bar/audio-bar.component';
+import { AudioButtonsComponent } from './audio-buttons/audio-buttons.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    QuillEditorComponent,
+    AudioBarComponent,
+    AudioButtonsComponent
   ],
   imports: [
     BrowserModule,

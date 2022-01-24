@@ -8,3 +8,14 @@ body {
   margin: 0px;
 }
 
+.test-box-b {
+  border: 1px dashed black;
+}
+.test-box-r {
+  border: 1px dashed red;
+}
+
+.full-height {
+  position: relative;
+  height: 100%;
+}
