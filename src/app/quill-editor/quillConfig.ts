@@ -1,4 +1,4 @@
-const quillToolbar = {
+const modules = {
   toolbar: [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
     ['blockquote'],
@@ -24,4 +24,4 @@ const quillToolbar = {
   ]
 }
 
-export { quillToolbar }
+export { modules }

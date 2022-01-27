@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Story } from '../../models/story';
-import { quillToolbar } from './quillConfig'
+import { modules } from './quillConfig'
 import { setIds } from './utils'
+import { QuillModule } from 'ngx-quill'
 
 @Component({
   selector: 'app-quill-editor',
@@ -13,10 +14,11 @@ export class QuillEditorComponent implements OnInit {
 
   story: Story = new Story();
 
-  quillToolbar = quillToolbar;
+  modules = modules;
+  placeholder = "start please"
 
   storyEdited(q: any) {
-    setIds();
+    setIds(q);
     this.story.text = q.text;
   }
 

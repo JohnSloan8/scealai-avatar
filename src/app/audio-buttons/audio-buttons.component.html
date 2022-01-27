@@ -1,7 +1,8 @@
 <div id="audioButtonsDiv" class="audio-buttons-container">
   <div class="audio-buttons-bar" id="audioButtonsBar" style="visibility: hidden; position: absolute;">
-    <fa-icon [icon]="faMicrophone" class="p-2"></fa-icon>
-    <fa-icon [icon]="faVolumeUp" class="p-2"></fa-icon>
-    <fa-icon [icon]="faMeh" class="p-2"></fa-icon>
+    <fa-icon [icon]="faMicrophone" class="p-2 audio-button"></fa-icon>
+    <fa-icon [icon]="faVolumeUp" class="p-2 audio-button hidden" ></fa-icon>
+    <fa-icon [icon]="faMeh" class="p-2 audio-button hidden"></fa-icon>
+    <audio id="audio_player_" style="display: none" src=""></audio>
   </div>
 </div>

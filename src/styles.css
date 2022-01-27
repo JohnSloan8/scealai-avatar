@@ -9,10 +9,10 @@ body {
 }
 
 .test-box-b {
-  border: 1px dashed black;
+  /*border: 1px dashed black;*/
 }
 .test-box-r {
-  border: 1px dashed red;
+  /*border: 1px dashed red;*/
 }
 
 .full-height {
