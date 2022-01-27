@@ -1,4 +1,5 @@
 import axios from 'axios'
+import mouth from '../avatar/three/mouth'
 
 const setIds = (q) => {
   let quillCont = document.getElementsByClassName("ql-editor");
@@ -34,6 +35,7 @@ const setIds = (q) => {
 
 }
 
+let speaking = false
 const getSpeechSynthesis = (text, sentId) => {
   console.log('text:', text)
   axios
@@ -51,6 +53,13 @@ const getSpeechSynthesis = (text, sentId) => {
         let m = document.getElementById('synth_' + sentId)
         m.addEventListener('click', () => {
           a.play()
+          speaking = true;
+          mouth(false);
+          let endTime = json.data.timing[json.data.timing.length-1].end
+          setTimeout(function(){
+            speaking = false;
+            mouth();
+          }, parseFloat(endTime)*1000);
         })
         m.style.visibility = "visible"
 
@@ -62,4 +71,4 @@ const getSpeechSynthesis = (text, sentId) => {
 	})
 }
 
-export { setIds }
+export { setIds, speaking }

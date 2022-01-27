@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { QuillEditorComponent } from './quill-editor/quill-editor.component';
 import { AudioBarComponent } from './audio-bar/audio-bar.component';
 import { AudioButtonsComponent } from './audio-buttons/audio-buttons.component';
+import { AvatarComponent } from './avatar/avatar.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { AudioButtonsComponent } from './audio-buttons/audio-buttons.component';
     ToolbarComponent,
     QuillEditorComponent,
     AudioBarComponent,
-    AudioButtonsComponent
+    AudioButtonsComponent,
+    AvatarComponent
   ],
   imports: [
     BrowserModule,
