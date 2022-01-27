@@ -8,7 +8,7 @@ const setIds = (q) => {
   let max_sent = 0
   Array.from(quillCont[0].children).forEach((c, i) => {
     c.id = "sent_" + i
-    let distanceFromTop = c.getBoundingClientRect().top - 20;
+    let distanceFromTop = c.getBoundingClientRect().top - 10;
     let audioDiv = document.getElementById('audioDiv_' + i)
     if ( i < quillCont[0].children.length - 1 && audioDiv === null ) {
       getSpeechSynthesis(c.innerHTML, i)
