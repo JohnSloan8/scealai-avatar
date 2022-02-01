@@ -16,6 +16,10 @@ export class QuillEditorComponent implements OnInit {
 
   modules = modules;
   placeholder = "start please"
+  styles = {
+    backgroundColor: 'white',
+    border: 'none'
+  }
 
   storyEdited(q: any) {
     setIds(q);

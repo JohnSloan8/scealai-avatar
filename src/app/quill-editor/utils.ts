@@ -1,5 +1,6 @@
 import axios from 'axios'
-import mouth from '../avatar/three/mouth'
+import startMouthing from '../avatar/three/mouth'
+import { avatarStates } from '../avatar/three/config'
 
 const setIds = (q) => {
   let quillCont = document.getElementsByClassName("ql-editor");
@@ -35,7 +36,6 @@ const setIds = (q) => {
 
 }
 
-let speaking = false
 const getSpeechSynthesis = (text, sentId) => {
   console.log('text:', text)
   axios
@@ -53,22 +53,19 @@ const getSpeechSynthesis = (text, sentId) => {
         let m = document.getElementById('synth_' + sentId)
         m.addEventListener('click', () => {
           a.play()
-          speaking = true;
-          mouth(false);
-          let endTime = json.data.timing[json.data.timing.length-1].end
-          setTimeout(function(){
-            speaking = false;
-            mouth();
-          }, parseFloat(endTime)*1000);
+          a.playbackRate = avatarStates.speakingSpeed
+          //speaking = true;
+          //mouth(false);
+          //let endTime = json.data.timing[json.data.timing.length-1].end
+          //setTimeout(function(){
+            //speaking = false;
+            //mouth();
+          //}, parseFloat(endTime)*1000);
+          startMouthing(json.data.timing)
         })
         m.style.visibility = "visible"
 
-				//dataURL = 'https://warm-reef-17230.herokuapp.com/api/v1/getCoordByURL/' + json.data.name
-				//APIInfoCont.style.visibility = "visible";
-				//clearAll();
-				//inputImageURL.style.visibility = "hidden"
-				//wordSelectorCont.style.visibility = "hidden"
 	})
 }
 
-export { setIds, speaking }
+export { setIds }

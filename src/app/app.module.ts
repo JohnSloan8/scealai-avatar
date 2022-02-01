@@ -11,6 +11,8 @@ import { QuillEditorComponent } from './quill-editor/quill-editor.component';
 import { AudioBarComponent } from './audio-bar/audio-bar.component';
 import { AudioButtonsComponent } from './audio-buttons/audio-buttons.component';
 import { AvatarComponent } from './avatar/avatar.component';
+import { SpeakingSpeedComponent } from './speaking-speed/speaking-speed.component';
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   declarations: [
@@ -20,13 +22,15 @@ import { AvatarComponent } from './avatar/avatar.component';
     QuillEditorComponent,
     AudioBarComponent,
     AudioButtonsComponent,
-    AvatarComponent
+    AvatarComponent,
+    SpeakingSpeedComponent
   ],
   imports: [
     BrowserModule,
     FontAwesomeModule,
     FormsModule,
-    QuillModule.forRoot()
+    QuillModule.forRoot(),
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

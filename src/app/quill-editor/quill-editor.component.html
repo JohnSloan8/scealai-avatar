@@ -6,7 +6,7 @@
     [(ngModel)]="story.htmlText"
     [preserveWhitespace]="true"
     (onContentChanged)="storyEdited($event);"
-    [styles]="{height: '50%;'}"
+    [styles]="styles"
     >
   </quill-editor>
 

@@ -2,6 +2,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as THREE from 'three'
 import mouth from './mouth'
+import { startRandomBlink } from './blink'
+import { randomNeckTurn, randomSway } from './sway'
 const TWEEN = require('@tweenjs/tween.js')
 
 export default function init() {
@@ -28,7 +30,7 @@ function loadScene() {
 		0.01,
 		100
 	);
-	scene.background = new THREE.Color('#2b3e50');
+	scene.background = new THREE.Color('#bae1ff');
 
 	hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.8);
 	hemiLight.position.set(0, 20, 0);
@@ -44,30 +46,41 @@ function loadScene() {
 
 
 var head
+var headBone
 var spine
 var neck
 var leftEye
 var rightEye
+var rightArm
+var leftArm
 function loadIndividualGLTF() {
 
 	gltfLoader = new GLTFLoader();
-	gltfLoader.load("https://d1a370nemizbjq.cloudfront.net/e5ab801e-a8cb-4b4c-a3ff-a091886b7de5.glb", function(gltf) {
+	gltfLoader.load("https://d1a370nemizbjq.cloudfront.net/625d97f4-3532-478b-934a-1e960ebfd84a.glb", function(gltf) {
 		model = gltf.scene;
     window.model = model;
 		scene.add( model );
+		model.rotation.y = -0.6
 		let direction = new THREE.Vector3();
 		let headPos;
 		model.traverse(function(object) {
+			//console.log('name:', object.name)
 			if (object.name === "Head") {
 				headPos = object.getWorldPosition(direction)
+				headBone = object;
 			}
       else if (object.name =="Wolf3D_Head") {
         console.log('MorphTargetDictionary:', object.morphTargetDictionary)
         head = object
 				lenMorphs = head.morphTargetInfluences.length;
-				window.head = head;
       } else if (object.name === "Spine") {
 				spine = object;
+      } else if (object.name === "RightArm") {
+				rightArm = object;
+				rightArm.rotation.x += 0.4
+      } else if (object.name === "LeftArm") {
+				leftArm = object;
+				leftArm.rotation.x += 0.4
       } else if (object.name === "Neck") {
 				neck = object;
 			} else if (object.name === "LeftEye") {
@@ -76,13 +89,15 @@ function loadIndividualGLTF() {
 				rightEye = object;
 			}
 		})
-		camera.position.set(0, headPos.y, 1)
-		controls = new OrbitControls(camera, renderer.domElement);
-		controls.target.set(0, headPos.y+0, 0);
-		controls.update();
+		headBone.rotation.y = 0.3;
+		camera.position.set(0, headPos.y, 1.7)
+		camera.rotation.set(-0.1, 0.25, 0)
+		//controls = new OrbitControls(camera, renderer.domElement);
+		//controls.target.set(0, headPos.y+0, 0);
+		//controls.update();
 		focalPoint = camera.getWorldPosition(direction)
 		animate()
-		randomBlink();
+		startRandomBlink();
 		randomSway();
 		randomNeckTurn();
 	})
@@ -94,60 +109,6 @@ function onWindowResize() {
 	renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
-///// Blink
-const randomBlink = () => {
-	blink()
-	let randomDelay = 2000 + Math.random() * 5000
-	setTimeout(function(){
-		randomBlink()
-	}, randomDelay)
-}
-
-const blink = () => {
-
-		let blinkTo = new Array(lenMorphs).fill(0);
-		let partKey = head.morphTargetDictionary.eyesClosed;
-		blinkTo[partKey] = 1
-		let blinking = new TWEEN.Tween(head.morphTargetInfluences).to(blinkTo, 100)
-			.easing(TWEEN.Easing.Quadratic.Out)
-			.yoyo(true)
-			.repeat(1)
-			.start()
-}
-
-const randomSway = (direction=1) => {
-	let randomDuration = 2000 + Math.random()*5000;
-	let randomRotation = Math.random()*0.025 * direction;
-	//if (c.p[who].states.speaking) {
-		//randomDuration /= 2;
-		//randomRotation *= 2;
-	//}
-	let sway = new TWEEN.Tween(spine.rotation).to({z: randomRotation}, randomDuration)
-		.easing(TWEEN.Easing.Cubic.InOut)
-		.start()
-	setTimeout(function(){
-		randomSway(direction*=-1)
-	}, randomDuration)
-}
-
-const randomNeckTurn = (direction=1) => {
-	let randomDuration = 2000 + Math.random()*5000;
-	let randomRotation = Math.random()*0.075 * direction;
-	//if (c.p[who].states.speaking) {
-		//randomDuration /= 2;
-		//randomRotation *= 2;
-	//}
-	let turn = new TWEEN.Tween(neck.rotation).to({y: randomRotation}, randomDuration)
-		.easing(TWEEN.Easing.Cubic.InOut)
-		.start()
-	turn.onUpdate(function (object) {
-		leftEye.lookAt(focalPoint)
-		rightEye.lookAt(focalPoint)
-	})
-	setTimeout(function(){
-		randomNeckTurn(direction*=-1)
-	}, randomDuration)
-}
 
 function animate() {
   TWEEN.update();
@@ -155,4 +116,4 @@ function animate() {
 	requestAnimationFrame(animate);
 }
 
-export { lenMorphs, head }
+export { lenMorphs, head, neck, spine, leftEye, rightEye, focalPoint }
