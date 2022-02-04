@@ -28,7 +28,7 @@ const mouthPhrase = () => {
 const mouthViseme = (vis, duration) => {
 	console.log('vis:', vis)
 	let faceMorphsTo = new Array(lenMorphs).fill(0);
-	faceMorphsTo[head.morphTargetDictionary[vis]] = 1;
+	faceMorphsTo[head.morphTargetDictionary[vis]] = 0.5;
 	let mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, duration)
 		.easing(TWEEN.Easing.Cubic.In)
 		.start()
