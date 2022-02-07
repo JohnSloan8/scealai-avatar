@@ -5,18 +5,30 @@ import phonemeToVisemeMap from './phonemeToViseme.js'
 
 let visemeCount = 0
 let timing = []
+let audio
 
-const startMouthing = newTiming => {
+const startMouthing = (a, newTiming) => {
+	audio = a
+	audio.playbackRate = 0.75
+	updateAvatarState('speakingSpeed', 0.75)
 	updateAvatarState('speaking', true)
 	timing = newTiming;
-	console.log('timing:', timing)
 	visemeCount = 0;
+	audio.play()
 	mouthPhrase();
 }
 
 const mouthPhrase = () => {
+	console.log('a.playbackRate:', audio.playbackRate)
 	let dur = 0
-	console.log('timing:', timing)
+	if ( timing[visemeCount].error && avatarStates.speakingSpeed !== 0.25 ) {
+		audio.playbackRate = 0.25
+		updateAvatarState('speakingSpeed', 0.25)
+		console.log('timing[visemeCount]:', timing[visemeCount])
+	} else if ( !timing[visemeCount].error  && avatarStates.speakingSpeed !== 0.75 ){
+		audio.playbackRate = 0.75
+		updateAvatarState('speakingSpeed', 0.75)
+	}
 	if (visemeCount === 0) {
 		dur = parseFloat(timing[visemeCount].end)*speakingSpeedMultDict[avatarStates.speakingSpeed] / avatarStates.speakingSpeed
 	} else {
@@ -26,7 +38,6 @@ const mouthPhrase = () => {
 }
 
 const mouthViseme = (vis, duration) => {
-	console.log('vis:', vis)
 	let faceMorphsTo = new Array(lenMorphs).fill(0);
 	faceMorphsTo[head.morphTargetDictionary[vis]] = 0.5;
 	let mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, duration)
@@ -38,12 +49,10 @@ const mouthViseme = (vis, duration) => {
 			visemeCount += 1;
 			mouthPhrase()
 		} else {
-			//faceMorphsTo = new Array(lenMorphs).fill(0);
-			//mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, randomMouthingDuration)
-				//.easing(TWEEN.Easing.Cubic.InOut)
-				//.start()
-			console.log('mouthing ended:', visemeCount)
-			console.log('finalVis:', vis)
+			faceMorphsTo = new Array(lenMorphs).fill(0);
+			mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, 500)
+				.easing(TWEEN.Easing.Cubic.InOut)
+				.start()
 			updateAvatarState('speaking', false)
 		}
 	})

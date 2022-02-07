@@ -13,7 +13,10 @@ const speakingSpeedMultDict = {
 	1: 850,
 	0.75: 875,
 	0.5: 920,
-	0.25: 925
+	0.25: 925,
+	0.2: 926,
+	0.15: 927,
+	0.1: 928
 }
 
 const starToSpeed = {
@@ -24,4 +27,19 @@ const starToSpeed = {
 	5: 1.25
 }
 
-module.exports = { updateAvatarState, avatarStates, speakingSpeedMultDict }
+const gramadoirObject = {
+	errors: [
+		{
+			fromx: 8,
+			tox: 15,
+			errortext: "mo cónaí"
+		},
+		{
+			fromx: 57,
+			tox: 66,
+			errortext: "i coláiste"
+		},
+	]
+}
+
+module.exports = { updateAvatarState, avatarStates, speakingSpeedMultDict, gramadoirObject }

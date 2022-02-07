@@ -3,6 +3,7 @@ import { Story } from '../../models/story';
 import { modules } from './quillConfig'
 import { setIds } from './utils'
 import { QuillModule } from 'ngx-quill'
+import Quill from 'quill'
 
 @Component({
   selector: 'app-quill-editor',

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import startMouthing from '../avatar/three/mouth'
 import { avatarStates } from '../avatar/three/config'
+import prepareAudioWithGramadoirCheck from "../avatar/three/prepareAudio"
 
 const setIds = (q) => {
   let quillCont = document.getElementsByClassName("ql-editor");
@@ -46,26 +47,12 @@ const getSpeechSynthesis = (text, sentId) => {
       )
       .then((json) => {
 				console.log('returned from json', json.data)
-        let a = <HTMLVideoElement> document.getElementById('audio_player_' + sentId)
-        console.log('a:', a)
-        a.setAttribute("src", "data:audio/wav;base64," + json.data.audioContent)
-    
-        let m = document.getElementById('synth_' + sentId)
-        m.addEventListener('click', () => {
-          a.play()
-          a.playbackRate = avatarStates.speakingSpeed
-          //speaking = true;
-          //mouth(false);
-          //let endTime = json.data.timing[json.data.timing.length-1].end
-          //setTimeout(function(){
-            //speaking = false;
-            //mouth();
-          //}, parseFloat(endTime)*1000);
-          startMouthing(json.data.timing)
-        })
-        m.style.visibility = "visible"
-
+        prepareAudioWithGramadoirCheck(json, sentId);
 	})
+}
+
+const dealWithTimeUpdate = e => {
+  console.log('inTimeUpdate', e)
 }
 
 export { setIds }
