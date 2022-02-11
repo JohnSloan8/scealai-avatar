@@ -1,0 +1,2 @@
+<textarea id="{{'sentence_' + sentence.id}}" (blur)="sentenceEvent('blur')"  (focus)="sentenceEvent('focus')" (keydown.enter)="$event.preventDefault();sentenceEvent('enter')" (keyup.enter)="$event.preventDefault();enterSentence()" [(ngModel)]="sentence.text" rows="1" [ngClass]="{'focussed-text-box': sentence.focussed, 'readyToSpeak-text-box': sentence.readyToSpeak}" style="width: 100%; border: none; resize: none;"></textarea>
+<p>{{ sentence.text }}</p>

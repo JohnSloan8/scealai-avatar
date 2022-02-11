@@ -13,6 +13,8 @@ import { AudioButtonsComponent } from './audio-buttons/audio-buttons.component';
 import { AvatarComponent } from './avatar/avatar.component';
 import { SpeakingSpeedComponent } from './speaking-speed/speaking-speed.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { TextBoxComponent } from './text-box/text-box.component';
+import { ElasticDirective } from './elastic.directive';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     AudioBarComponent,
     AudioButtonsComponent,
     AvatarComponent,
-    SpeakingSpeedComponent
+    SpeakingSpeedComponent,
+    TextBoxComponent,
+    ElasticDirective
   ],
   imports: [
     BrowserModule,

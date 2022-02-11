@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { sentences } from '../sentences'
 
 @Component({
   selector: 'app-page',
@@ -8,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 
 export class PageComponent implements OnInit {
 
+  sentences = sentences;
   constructor() { }
 
   ngOnInit(): void {

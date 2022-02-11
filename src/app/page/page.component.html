@@ -1,7 +1,11 @@
 <div class="b" style="position: absolute; height: 100%; width: 50%;">
-  <div class="r" id="storyBoxContainer" style="position: relative; height: 50%; width: 100%; margin: 5em; background-color: white;">
-    <div class="container-fluid">
-    
+  <div class="r" id="storyBoxContainer" style="position: relative; height: 50%; width: 100%; margin: 3em; background-color: white;">
+    <div appElastic class="container p-2" >
+      <div *ngFor="let sentence of sentences">
+        <div class="container p-1">
+          <app-text-box [sentence]="sentence"></app-text-box>
+        </div>
+      </div>
     </div>
   </div>
 </div>
