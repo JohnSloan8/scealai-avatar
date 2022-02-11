@@ -8,11 +8,11 @@ body {
   margin: 0px;
 }
 
-.test-box-b {
-  /*border: 1px dashed black;*/
+.b {
+  border: 1px dashed black;
 }
-.test-box-r {
-  /*border: 1px dashed red;*/
+.r {
+  border: 1px dashed red;
 }
 
 .full-height {
@@ -32,28 +32,4 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.padding-md {
-  padding: 10px;
-}
-
-/*quill toolbar colors*/
-.ql-toolbar {
-  background-color: #2e5893 !important;
-  border: none !important;
-}
-
-.ql-toolbar .ql-stroke {
-    fill: none !important;
-    stroke: #fff !important;
-}
-
-.ql-toolbar .ql-fill {
-    fill: #fff !important;
-    stroke: none !important;
-}
-
-.ql-toolbar .ql-picker {
-    color: #fff !important;
 }
