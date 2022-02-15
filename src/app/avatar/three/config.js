@@ -1,12 +1,15 @@
 const avatarStates = {
 	speaking: false,
 	blinking: false,
-	speakingSpeed: 1
+	speakingSpeed: 1,
+	mouseHover: false
 }
 
 const updateAvatarState = (state, value) => {
 	avatarStates[state] = value
 }
+
+var bodyPartsList = []
 
 const speakingSpeedMultDict = {
 	1.25: 825,
@@ -42,4 +45,4 @@ const gramadoirObject = {
 	]
 }
 
-module.exports = { updateAvatarState, avatarStates, speakingSpeedMultDict, gramadoirObject }
+module.exports = { bodyPartsList, updateAvatarState, avatarStates, speakingSpeedMultDict, gramadoirObject }

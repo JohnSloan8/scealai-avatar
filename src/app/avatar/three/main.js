@@ -1,10 +1,27 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as THREE from 'three'
-import mouth from './mouth'
+import startMouthing from './mouth'
 import { startRandomBlink } from './blink'
+import { bodyPartsList, avatarStates, updateAvatarState } from './config'
 import { randomNeckTurn, randomSway } from './sway'
 const TWEEN = require('@tweenjs/tween.js')
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+const onPointerMove = event => {
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+const onClick = event => {
+	event.preventDefault();
+	if ( avatarStates.mouseHover ) {
+		console.log('clicked on mouseHover')
+    startMouthing()
+	}
+}
 
 export default function init() {
 	loadScene()
@@ -64,7 +81,10 @@ function loadIndividualGLTF() {
 		let direction = new THREE.Vector3();
 		let headPos;
 		model.traverse(function(object) {
-			//console.log('name:', object.name)
+			//console.log('name:', object.name
+			if (object.type === "SkinnedMesh") {
+				bodyPartsList.push(object)
+			}
 			if (object.name === "Head") {
 				headPos = object.getWorldPosition(direction)
 				headBone = object;
@@ -89,6 +109,7 @@ function loadIndividualGLTF() {
 				rightEye = object;
 			}
 		})
+		window.model = model
 		headBone.rotation.y = 0.3;
 		camera.position.set(0, headPos.y, 1.7)
 		camera.rotation.set(-0.1, 0.25, 0)
@@ -109,11 +130,49 @@ function onWindowResize() {
 	renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
+const mouseOnAvatar = over => {
+	console.log('over:', over)
+	if (over) {
+		document.body.style.cursor = 'pointer'
+		bodyPartsList.forEach( bP => {
+			bP.material.emissive.b = 0.05;
+			bP.material.emissive.r = 0.05;
+			bP.material.emissive.g = 0.05;
+		})
+	} else {
+		document.body.style.cursor = 'default'
+		bodyPartsList.forEach( bP => {
+			bP.material.emissive.b = 0;
+			bP.material.emissive.r = 0;
+			bP.material.emissive.g = 0;
+		})
+	}
+}
 
 function animate() {
   TWEEN.update();
+	raycaster.setFromCamera( pointer, camera );
+
+	// calculate objects intersecting the picking ray
+	const intersects = raycaster.intersectObjects( scene.children );
+
+	if (intersects.length === 0) {
+		if (avatarStates.mouseHover) {
+			updateAvatarState('mouseHover', false)
+			mouseOnAvatar(false)
+		}
+	} else {
+		if (!avatarStates.mouseHover) {
+			updateAvatarState('mouseHover', true)
+			mouseOnAvatar(true)
+		}
+	}
+
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
+
+window.addEventListener( 'pointermove', onPointerMove );
+window.addEventListener( 'click', onClick );
 
 export { lenMorphs, head, neck, spine, leftEye, rightEye, focalPoint }

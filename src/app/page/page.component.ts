@@ -13,6 +13,15 @@ export class PageComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    if (sentences.length === 0) {
+      sentences.push({
+        id: 0,
+        text: "",
+        errors: null,
+        focussed: false,
+        readyToSpeak: false
+      })
+    }
+    setTimeout(function(){document.getElementById('sentence_0').focus()}, 100)
   }
-
 }

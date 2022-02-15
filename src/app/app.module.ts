@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { QuillModule } from 'ngx-quill'
+import { HttpClientModule } from '@angular/common/http'
 
 import { AppComponent } from './app.component';
 import { PageComponent } from './page/page.component';
@@ -34,7 +35,8 @@ import { ElasticDirective } from './elastic.directive';
     FontAwesomeModule,
     FormsModule,
     QuillModule.forRoot(),
-    NgbModule
+    NgbModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

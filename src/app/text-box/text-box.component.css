@@ -1,5 +1,5 @@
 .focussed-text-box {
-  background-color: #aaaaff;
+  background-color: white;
 }
 
 .readyToSpeak-text-box {
@@ -8,4 +8,8 @@
 
 .inactive-text-box {
   background-color: white;
+}
+
+textarea {
+  outline: none;
 }
