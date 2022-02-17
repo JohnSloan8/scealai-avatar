@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { sentences, Sentence, /*focussedSentence*/ } from '../sentences'
 import { TtsService } from '../tts.service'
+import { GramadoirService } from '../gramadoir.service'
 import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
 
 @Component({
@@ -11,13 +12,17 @@ import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
 export class TextBoxComponent implements OnInit {
 
   @Input() sentence!: Sentence;
-
-
-  constructor(private ttsService:TtsService) { 
+  audioID: string
+  constructor(
+    private ttsService:TtsService,
+    private gramadoirService:GramadoirService
+  ) { 
   }
 
   ngOnInit(): void {
+    this.audioID = "sentAudio" + this.sentence.id
   }
+
   sentenceEvent = eventType => {
     if (eventType === "blur") {
       this.blurSentence();
@@ -80,13 +85,29 @@ export class TextBoxComponent implements OnInit {
     }
   }
 
+  speakNow = () => {
+    if (!this.sentence.awaitingTts && !this.sentence.awaitingGramadoir) {
+      this.sentence.readyToSpeak = true;
+      prepareAudioWithGramadoirCheck(this.sentence.id)
+    }
+  }
+
   enterSentence = () => {
     if ( this.sentence.text !== "" ) {
+      this.sentence.awaitingTts = true;
+      this.sentence.awaitingGramadoir = true;
 	    sentences.map( s => s.readyToSpeak = false)
+      this.gramadoirService.getGramadoir(this.sentence.text).subscribe((g) => {
+        this.sentence['errors'] = g
+        this.sentence.awaitingTts = false;
+        this.speakNow()
+        console.log('gramadoir.sentence:', this.sentence)
+      })
       this.ttsService.getTTS(this.sentence.text).subscribe((tts) => {
         this.sentence['audioData'] = tts
-        this.sentence.readyToSpeak = true;
-        prepareAudioWithGramadoirCheck(tts, this.sentence.id)
+        this.sentence.awaitingGramadoir = false;
+        this.speakNow()
+        console.log('tts.sentence:', this.sentence)
       })
 
       this.sentence.focussed = false;

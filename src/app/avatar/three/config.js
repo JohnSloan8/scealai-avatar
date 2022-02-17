@@ -2,7 +2,8 @@ const avatarStates = {
 	speaking: false,
 	blinking: false,
 	speakingSpeed: 1,
-	mouseHover: false
+	mouseHover: false,
+	activeSentence: null
 }
 
 const updateAvatarState = (state, value) => {
@@ -22,27 +23,4 @@ const speakingSpeedMultDict = {
 	0.1: 928
 }
 
-const starToSpeed = {
-	1: 0.25,
-	2: 0.5,
-	3: 0.75,
-	4: 1,
-	5: 1.25
-}
-
-const gramadoirObject = {
-	errors: [
-		{
-			fromx: 8,
-			tox: 15,
-			errortext: "mo cónaí"
-		},
-		{
-			fromx: 57,
-			tox: 66,
-			errortext: "i coláiste"
-		},
-	]
-}
-
-module.exports = { bodyPartsList, updateAvatarState, avatarStates, speakingSpeedMultDict, gramadoirObject }
+module.exports = { bodyPartsList, updateAvatarState, avatarStates, speakingSpeedMultDict }

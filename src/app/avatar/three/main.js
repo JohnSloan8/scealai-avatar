@@ -1,12 +1,13 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as THREE from 'three'
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import startMouthing from './mouth'
 import { startRandomBlink } from './blink'
 import { bodyPartsList, avatarStates, updateAvatarState } from './config'
 import { randomNeckTurn, randomSway } from './sway'
 const TWEEN = require('@tweenjs/tween.js')
-
+var stats = new Stats();
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
@@ -31,6 +32,7 @@ export default function init() {
 var gltfLoader, model, controls, container, scene, camera, renderer, hemiLight, dirLight, focalPoint, lenMorphs
 function loadScene() {
 	container = document.getElementById("avatarCanvas");
+	container.appendChild( stats.dom )
 	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 	renderer.setClearColor( 0x00ffff, 0 )
 	scene = new THREE.Scene();
@@ -168,6 +170,7 @@ function animate() {
 		}
 	}
 
+	stats.update();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
