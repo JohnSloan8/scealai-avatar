@@ -151,6 +151,17 @@ const mouseOnAvatar = over => {
 	}
 }
 
+const avatarReadyToSpeak = () => {
+		bodyPartsList.forEach( bP => {
+			bP.material.emissive.b = 0.15;
+			bP.material.emissive.r = 0.15;
+			bP.material.emissive.g = 0.15;
+			let avatarFlash = new TWEEN.Tween(bP.material.emissive).to({b: 0, r: 0, g: 0}, 2000)
+				.easing(TWEEN.Easing.Quadratic.Out)
+				.start()
+		})
+}
+
 function animate() {
   TWEEN.update();
 	raycaster.setFromCamera( pointer, camera );
@@ -178,4 +189,4 @@ function animate() {
 window.addEventListener( 'pointermove', onPointerMove );
 window.addEventListener( 'click', onClick );
 
-export { lenMorphs, head, neck, spine, leftEye, rightEye, focalPoint }
+export { lenMorphs, head, neck, spine, leftEye, rightEye, focalPoint, avatarReadyToSpeak }

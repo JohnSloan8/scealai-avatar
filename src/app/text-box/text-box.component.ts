@@ -3,6 +3,8 @@ import { sentences, Sentence, /*focussedSentence*/ } from '../sentences'
 import { TtsService } from '../tts.service'
 import { GramadoirService } from '../gramadoir.service'
 import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
+import { avatarReadyToSpeak } from '../avatar/three/main'
+//import TWEEN from '@tweenjs/tween.js'
 
 @Component({
   selector: 'app-text-box',
@@ -21,6 +23,14 @@ export class TextBoxComponent implements OnInit {
 
   ngOnInit(): void {
     this.audioID = "sentAudio" + this.sentence.id
+  }
+
+  onKeyPress = evt => {
+    if (evt.key === '.') {
+      evt.preventDefault()
+      console.log('full stop pressed')
+      this.enterSentence()
+    }
   }
 
   sentenceEvent = eventType => {
@@ -89,6 +99,7 @@ export class TextBoxComponent implements OnInit {
     if (!this.sentence.awaitingTts && !this.sentence.awaitingGramadoir) {
       this.sentence.readyToSpeak = true;
       prepareAudioWithGramadoirCheck(this.sentence.id)
+      avatarReadyToSpeak()
     }
   }
 
