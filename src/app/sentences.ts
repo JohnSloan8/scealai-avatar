@@ -6,6 +6,8 @@ interface Sentence {
   readyToSpeak: boolean;
   awaitingTts: boolean;
   awaitingGramadoir: boolean;
+  audioData: object;
+  editted: boolean;
 }
 
 const sentences = [

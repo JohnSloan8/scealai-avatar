@@ -28,4 +28,4 @@ const blink = () => {
 		}
 }
 
-export { startRandomBlink }
+export { startRandomBlink, blink }

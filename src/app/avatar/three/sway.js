@@ -1,10 +1,10 @@
 const TWEEN = require('@tweenjs/tween.js')
 import { avatarStates } from './config.js'
-import { spine, neck, leftEye, rightEye, focalPoint } from './main.js'
+import { spine, neck, leftEye, rightEye } from './main.js'
 
 const randomSway = (direction=1) => {
 	let randomDuration = 2000 + Math.random()*5000;
-	let randomRotation = Math.random()*0.025 * direction;
+	let randomRotation = Math.random()*0.02 * direction;
 	if (avatarStates.speaking) {
 		randomDuration /= 2;
 		randomRotation *= 2;
@@ -19,7 +19,7 @@ const randomSway = (direction=1) => {
 
 const randomNeckTurn = (direction=1) => {
 	let randomDuration = 2000 + Math.random()*5000;
-	let randomRotation = Math.random()*0.075 * direction;
+	let randomRotation = Math.random()*0.05 * direction;
 	if (avatarStates.speaking) {
 		randomDuration /= 3;
 		randomRotation *= 2.5;
@@ -28,8 +28,8 @@ const randomNeckTurn = (direction=1) => {
 		.easing(TWEEN.Easing.Cubic.InOut)
 		.start()
 	turn.onUpdate(function (object) {
-		leftEye.lookAt(focalPoint)
-		rightEye.lookAt(focalPoint)
+		leftEye.lookAt(avatarStates.focalPoint)
+		rightEye.lookAt(avatarStates.focalPoint)
 	})
 	setTimeout(function(){
 		randomNeckTurn(direction*=-1)

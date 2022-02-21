@@ -6,6 +6,7 @@ import startMouthing from './mouth'
 import { startRandomBlink } from './blink'
 import { bodyPartsList, avatarStates, updateAvatarState } from './config'
 import { randomNeckTurn, randomSway } from './sway'
+import { avatarLookAt } from './look'
 const TWEEN = require('@tweenjs/tween.js')
 var stats = new Stats();
 const raycaster = new THREE.Raycaster();
@@ -18,7 +19,8 @@ const onPointerMove = event => {
 
 const onClick = event => {
 	event.preventDefault();
-	if ( avatarStates.mouseHover ) {
+	console.log('avatarStates,', avatarStates)
+	if ( avatarStates.mouseHover && !avatarStates.speaking ) {
 		console.log('clicked on mouseHover')
     startMouthing()
 	}
@@ -29,7 +31,7 @@ export default function init() {
 	//setUpAvatar();
 }
 
-var gltfLoader, model, controls, container, scene, camera, renderer, hemiLight, dirLight, focalPoint, lenMorphs
+var gltfLoader, model, controls, container, scene, camera, renderer, hemiLight, dirLight, lenMorphs
 function loadScene() {
 	container = document.getElementById("avatarCanvas");
 	container.appendChild( stats.dom )
@@ -49,6 +51,7 @@ function loadScene() {
 		0.01,
 		100
 	);
+	window.camera = camera
 	scene.background = new THREE.Color('#bae1ff');
 
 	hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.8);
@@ -67,6 +70,8 @@ function loadScene() {
 var head
 var headBone
 var spine
+var spine1
+var spine2
 var neck
 var leftEye
 var rightEye
@@ -97,12 +102,16 @@ function loadIndividualGLTF() {
 				lenMorphs = head.morphTargetInfluences.length;
       } else if (object.name === "Spine") {
 				spine = object;
+      } else if (object.name === "Spine1") {
+				spine1 = object;
+      } else if (object.name === "Spine2") {
+				spine2 = object;
       } else if (object.name === "RightArm") {
 				rightArm = object;
-				rightArm.rotation.x += 0.4
+				rightArm.rotation.x += 0.5
       } else if (object.name === "LeftArm") {
 				leftArm = object;
-				leftArm.rotation.x += 0.4
+				leftArm.rotation.x += 0.5
       } else if (object.name === "Neck") {
 				neck = object;
 			} else if (object.name === "LeftEye") {
@@ -118,7 +127,7 @@ function loadIndividualGLTF() {
 		//controls = new OrbitControls(camera, renderer.domElement);
 		//controls.target.set(0, headPos.y+0, 0);
 		//controls.update();
-		focalPoint = camera.getWorldPosition(direction)
+		avatarStates.focalPoint = camera.getWorldPosition(direction)
 		animate()
 		startRandomBlink();
 		randomSway();
@@ -151,17 +160,6 @@ const mouseOnAvatar = over => {
 	}
 }
 
-const avatarReadyToSpeak = () => {
-		bodyPartsList.forEach( bP => {
-			bP.material.emissive.b = 0.15;
-			bP.material.emissive.r = 0.15;
-			bP.material.emissive.g = 0.15;
-			let avatarFlash = new TWEEN.Tween(bP.material.emissive).to({b: 0, r: 0, g: 0}, 2000)
-				.easing(TWEEN.Easing.Quadratic.Out)
-				.start()
-		})
-}
-
 function animate() {
   TWEEN.update();
 	raycaster.setFromCamera( pointer, camera );
@@ -189,4 +187,4 @@ function animate() {
 window.addEventListener( 'pointermove', onPointerMove );
 window.addEventListener( 'click', onClick );
 
-export { lenMorphs, head, neck, spine, leftEye, rightEye, focalPoint, avatarReadyToSpeak }
+export { lenMorphs, head, headBone, neck, spine, spine1, spine2, leftEye, rightEye }

@@ -4,6 +4,9 @@ import { TtsService } from '../tts.service'
 import { GramadoirService } from '../gramadoir.service'
 import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
 import { avatarReadyToSpeak } from '../avatar/three/main'
+import { avatarLookAt } from '../avatar/three/look'
+import { avatarStates } from '../avatar/three/config'
+import startMouthing from '../avatar/three/mouth'
 //import TWEEN from '@tweenjs/tween.js'
 
 @Component({
@@ -25,10 +28,12 @@ export class TextBoxComponent implements OnInit {
     this.audioID = "sentAudio" + this.sentence.id
   }
 
+  sentenceEndings = ['.', '?', '!']
   onKeyPress = evt => {
-    if (evt.key === '.') {
-      evt.preventDefault()
-      console.log('full stop pressed')
+    console.log('sentence:', this.sentence.text)
+    if (this.sentenceEndings.includes(evt.key)) {
+      //evt.preventDefault()
+      console.log('end key pressed')
       this.enterSentence()
     }
   }
@@ -36,6 +41,8 @@ export class TextBoxComponent implements OnInit {
   sentenceEvent = eventType => {
     if (eventType === "blur") {
       this.blurSentence();
+    } else if (eventType === "click") {
+      this.clickSentence();
     } else if (eventType === "change") {
       this.changeSentence();
     } else if (eventType === "enter") {
@@ -47,18 +54,29 @@ export class TextBoxComponent implements OnInit {
     }
   }
 
+  clickSentence = () => {
+    sentences.map(s => s.readyToSpeak = false)
+    console.log('this.sentence:', this.sentence)
+    this.sentence.focussed = true;
+    if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
+      this.sentence.readyToSpeak = true
+      startMouthing()
+    }
+  }
+
   blurSentence = () => {
     this.sentence.focussed = false;
   }
 
   changeSentence = () => {
-    console.log('in change sentnece')
+    //console.log('in change sentence')
 		//let activeSentence = sentences.filter( s => s.focussed )[0]
     //if ( activeSentence !== undefined ) {
       //activeSentence.focussed = false;
     //}
     //console.log('sentence focussed', this.sentence.id)
     this.sentence.readyToSpeak = false;
+    this.sentence.editted = true;
   }
 
   arrowSentence = up => {
@@ -67,14 +85,26 @@ export class TextBoxComponent implements OnInit {
     if (up) {
       if (!this.firstSentence()) {
         this.sentence.focussed = false;
+        this.sentence.readyToSpeak = false;
         nextSentenceID = this.sentence.id - 1
+        let nextSentence = sentences.find(s => s.id === nextSentenceID)
         document.getElementById('sentence_' + nextSentenceID).focus()
+        if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
+          nextSentence.readyToSpeak = true
+          startMouthing()
+        }
       }
     } else {
       if (!this.lastSentence()) {
         this.sentence.focussed = false;
+        this.sentence.readyToSpeak = false;
         nextSentenceID = this.sentence.id + 1
+        let nextSentence = sentences.find(s => s.id === nextSentenceID)
         document.getElementById('sentence_' + nextSentenceID).focus()
+        if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
+          nextSentence.readyToSpeak = true
+          startMouthing()
+        }
       }
     }
   }
@@ -99,12 +129,14 @@ export class TextBoxComponent implements OnInit {
     if (!this.sentence.awaitingTts && !this.sentence.awaitingGramadoir) {
       this.sentence.readyToSpeak = true;
       prepareAudioWithGramadoirCheck(this.sentence.id)
-      avatarReadyToSpeak()
+      avatarLookAt('camera', 1500 )
     }
   }
 
   enterSentence = () => {
     if ( this.sentence.text !== "" ) {
+      this.sentence.editted = false
+      avatarLookAt('board', 1500)
       this.sentence.awaitingTts = true;
       this.sentence.awaitingGramadoir = true;
 	    sentences.map( s => s.readyToSpeak = false)

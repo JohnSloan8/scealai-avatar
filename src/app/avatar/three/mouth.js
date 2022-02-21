@@ -1,20 +1,24 @@
 const TWEEN = require('@tweenjs/tween.js')
 import { lenMorphs, head } from './main'
-import { a } from './prepareAudio'
+//import { a } from './prepareAudio'
 import { updateAvatarState, avatarStates, speakingSpeedMultDict } from './config'
 import phonemeToVisemeMap from './phonemeToViseme.js'
 import { sentences } from '../../sentences'
 
 let visemeCount = 0
 let activeSentence
-
+let a
 const startMouthing = () => {
-	activeSentence = sentences[avatarStates.activeSentence]
-	console.log('activeSentence:', activeSentence)
-  //let audio = document.getElementById('sentAudio' + sentId)
-	visemeCount = 0;
-	a.play()
-	mouthPhrase();
+	updateAvatarState('speaking', true)
+	activeSentence = sentences.find(s => s.readyToSpeak)
+	if (activeSentence !== undefined) {
+		a = document.getElementById('sentAudio' + activeSentence.id)
+		visemeCount = 0;
+		a.play()
+		mouthPhrase();
+	} else {
+		console.log('activeSentence undefined')
+	}
 }
 
 const mouthPhrase = () => {
@@ -62,6 +66,8 @@ const mouthViseme = (vis, duration) => {
 			mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, 500)
 				.easing(TWEEN.Easing.Cubic.InOut)
 				.start()
+			a.playbackRate = 1
+			updateAvatarState('speakingSpeed', 1)
 			updateAvatarState('speaking', false)
 		}
 	})
