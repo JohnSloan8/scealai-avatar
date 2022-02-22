@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { QuillModule } from 'ngx-quill'
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 
 import { AppComponent } from './app.component';
 import { PageComponent } from './page/page.component';
@@ -16,6 +16,8 @@ import { SpeakingSpeedComponent } from './speaking-speed/speaking-speed.componen
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TextBoxComponent } from './text-box/text-box.component';
 import { ElasticDirective } from './elastic.directive';
+
+import { AuthInterceptor } from './auth.interceptor'
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { ElasticDirective } from './elastic.directive';
     NgbModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

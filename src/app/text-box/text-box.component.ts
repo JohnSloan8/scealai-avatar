@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { sentences, Sentence, /*focussedSentence*/ } from '../sentences'
 import { TtsService } from '../tts.service'
 import { GramadoirService } from '../gramadoir.service'
+import { WrittenAttemptService } from '../api/written-attempt.service'
 import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
 import { avatarReadyToSpeak } from '../avatar/three/main'
 import { avatarLookAt } from '../avatar/three/look'
@@ -20,7 +21,8 @@ export class TextBoxComponent implements OnInit {
   audioID: string
   constructor(
     private ttsService:TtsService,
-    private gramadoirService:GramadoirService
+    private gramadoirService:GramadoirService,
+    private writtenAttemptService:WrittenAttemptService,
   ) { 
   }
 
@@ -151,6 +153,9 @@ export class TextBoxComponent implements OnInit {
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
         console.log('tts.sentence:', this.sentence)
+      })
+      this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
+        console.log('sendWrittenAttempt:', swa)
       })
 
       this.sentence.focussed = false;

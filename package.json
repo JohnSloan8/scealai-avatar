@@ -10,7 +10,10 @@
     "heroku-postbuild": "ng build --prod"
   },
   "private": true,
-  "engines": { "node": "16.10.0", "npm": "8.3.0" },
+  "engines": {
+    "node": "16.10.0",
+    "npm": "8.3.0"
+  },
   "dependencies": {
     "@angular-devkit/build-angular": "~13.1.2",
     "@angular/animations": "~13.1.0",
@@ -23,6 +26,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
+    "@auth0/angular-jwt": "^5.0.2",
     "@fortawesome/angular-fontawesome": "^0.10.1",
     "@fortawesome/fontawesome-svg-core": "~1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
