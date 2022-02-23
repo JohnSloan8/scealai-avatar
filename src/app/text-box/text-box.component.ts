@@ -32,34 +32,32 @@ export class TextBoxComponent implements OnInit {
 
   sentenceEndings = ['.', '?', '!']
   onKeyPress = evt => {
-    console.log('sentence:', this.sentence.text)
-    if (this.sentenceEndings.includes(evt.key)) {
-      //evt.preventDefault()
+    console.log('key:', evt)
+    if (evt.key === "Enter") {
+      evt.preventDefault()
+      this.enterSentence()
+    } else if (this.sentenceEndings.includes(evt.key)) {
+      if (this.sentenceEndings.includes(this.sentence.text[this.sentence.text.length-1])) {
+        evt.preventDefault()
+      }
       console.log('end key pressed')
       this.enterSentence()
-    }
-  }
+    } else {
 
-  sentenceEvent = eventType => {
-    if (eventType === "blur") {
-      this.blurSentence();
-    } else if (eventType === "click") {
-      this.clickSentence();
-    } else if (eventType === "change") {
-      this.changeSentence();
-    } else if (eventType === "enter") {
-      this.enterSentence();
-    } else if (eventType === "up") {
-      this.arrowSentence(true);
-    } else if (eventType === "down") {
-      this.arrowSentence(false);
+    if (this.sentence.readyToSpeak) {
+        this.sentence.readyToSpeak = false;
     }
+    }
+
   }
 
   clickSentence = () => {
     sentences.map(s => s.readyToSpeak = false)
-    console.log('this.sentence:', this.sentence)
+    //console.log('this.sentence:', this.sentence)
     this.sentence.focussed = true;
+    console.log('audioData:', this.sentence.audioData)
+    console.log('editted:', this.sentence.editted)
+    console.log('speaking:', avatarStates.speaking)
     if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
       this.sentence.readyToSpeak = true
       startMouthing()
@@ -77,6 +75,9 @@ export class TextBoxComponent implements OnInit {
       //activeSentence.focussed = false;
     //}
     //console.log('sentence focussed', this.sentence.id)
+    //if (this.sentenceEndings.includes(this.sentence.text[this.sentence.text.length - 2])) {
+    //    this.sentence.text = this.sentence.text.slice(0, this.sentence.text.length - 2) + ','
+    //}
     this.sentence.readyToSpeak = false;
     this.sentence.editted = true;
   }
@@ -136,27 +137,32 @@ export class TextBoxComponent implements OnInit {
   }
 
   enterSentence = () => {
-    if ( this.sentence.text !== "" ) {
+    if ( this.sentence.text !== "" && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
       this.sentence.editted = false
       avatarLookAt('board', 1500)
       this.sentence.awaitingTts = true;
       this.sentence.awaitingGramadoir = true;
-	    sentences.map( s => s.readyToSpeak = false)
+      sentences.map( s => s.readyToSpeak = false)
+
+      let re = /[\.\?!]/g
+      let comma = ", "
+      let sentenceWithoutEndStops = this.sentence.text.replace(re, comma)
+      console.log('sentenceWithoutStops:', sentenceWithoutEndStops) 
       this.gramadoirService.getGramadoir(this.sentence.text).subscribe((g) => {
         this.sentence['errors'] = g
         this.sentence.awaitingTts = false;
         this.speakNow()
-        console.log('gramadoir.sentence:', this.sentence)
+        //console.log('gramadoir.sentence:', this.sentence)
       })
-      this.ttsService.getTTS(this.sentence.text).subscribe((tts) => {
+      this.ttsService.getTTS(sentenceWithoutEndStops).subscribe((tts) => {
         this.sentence['audioData'] = tts
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
-        console.log('tts.sentence:', this.sentence)
+        //console.log('tts.sentence:', this.sentence)
       })
-      this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
-        console.log('sendWrittenAttempt:', swa)
-      })
+      //this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
+        //console.log('sendWrittenAttempt:', swa)
+      //})
 
       this.sentence.focussed = false;
       let nextSentenceID = this.sentence.id + 1 ;

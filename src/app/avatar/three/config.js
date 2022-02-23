@@ -1,4 +1,5 @@
 const avatarStates = {
+	lookingAtBoard: false,
 	speaking: false,
 	blinking: false,
 	speakingSpeed: 1,

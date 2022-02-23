@@ -63,12 +63,16 @@ const mouthViseme = (vis, duration) => {
 			mouthPhrase()
 		} else {
 			faceMorphsTo = new Array(lenMorphs).fill(0);
-			mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, 500)
+			let lastMouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, 500)
 				.easing(TWEEN.Easing.Cubic.InOut)
 				.start()
-			a.playbackRate = 1
-			updateAvatarState('speakingSpeed', 1)
-			updateAvatarState('speaking', false)
+			lastMouthingIn.onComplete( function() {
+
+				a.playbackRate = 1
+				updateAvatarState('speakingSpeed', 1)
+				updateAvatarState('speaking', false)
+				activeSentence.readyToSpeak = false;
+			})
 		}
 	})
 }

@@ -12,13 +12,14 @@ const avatarLookAt = (what, duration) => {
 		let spine2Rot
 		let spine1Rot
 		if (what === 'board') {
+			avatarStates.lookingAtBoard = true;
 			avatarStates.focalPoint = new THREE.Vector3(-2,2,2) 
 			headBoneRot = new TWEEN.Tween(headBone.rotation).to({x: 0, y: -0.2, z: 0.0}, 0.7*duration)
 			spine2Rot = new TWEEN.Tween(spine2.rotation).to({x: 0, y: -0.1, z: 0.0}, 0.85*duration)
 			spine1Rot = new TWEEN.Tween(spine1.rotation).to({x: 0, y: -0.05, z: 0.0}, duration)
 		} else {
 			avatarStates.focalPoint = camera.getWorldPosition(dir)
-			headBoneRot = new TWEEN.Tween(headBone.rotation).to({x: 0, y: 0.3, z: 0.0}, 0.7*duration)
+			headBoneRot = new TWEEN.Tween(headBone.rotation).to({x: 0, y: 0.3, z: 0.0}, 0.5*duration)
 			spine2Rot = new TWEEN.Tween(spine2.rotation).to({x: 0, y: 0, z: 0.0}, 0.85*duration)
 			spine1Rot = new TWEEN.Tween(spine1.rotation).to({x: 0, y: 0, z: 0.0}, duration)
 		}
@@ -39,6 +40,7 @@ const avatarLookAt = (what, duration) => {
 		headBoneRot.onComplete( () => {
 			if ( what === 'camera' ) {
 				startMouthing();
+				avatarStates.lookingAtBoard = false;
 			}
 		})
 			//let direction = new THREE.Vector3();
