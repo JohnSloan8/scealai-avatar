@@ -2,7 +2,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as THREE from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-import startMouthing from './mouth'
+import { startSpeaking } from './mouth'
 import { startRandomBlink } from './blink'
 import { bodyPartsList, avatarStates, updateAvatarState } from './config'
 import { randomNeckTurn, randomSway } from './sway'
@@ -19,10 +19,8 @@ const onPointerMove = event => {
 
 const onClick = event => {
 	event.preventDefault();
-	console.log('avatarStates,', avatarStates)
 	if ( avatarStates.mouseHover && !avatarStates.speaking ) {
-		console.log('clicked on mouseHover')
-    startMouthing()
+    startSpeaking(false)
 	}
 }
 
@@ -142,21 +140,10 @@ function onWindowResize() {
 }
 
 const mouseOnAvatar = over => {
-	console.log('over:', over)
 	if (over) {
 		document.body.style.cursor = 'pointer'
-		bodyPartsList.forEach( bP => {
-			bP.material.emissive.b = 0.05;
-			bP.material.emissive.r = 0.05;
-			bP.material.emissive.g = 0.05;
-		})
 	} else {
 		document.body.style.cursor = 'default'
-		bodyPartsList.forEach( bP => {
-			bP.material.emissive.b = 0;
-			bP.material.emissive.r = 0;
-			bP.material.emissive.g = 0;
-		})
 	}
 }
 

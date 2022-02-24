@@ -11,9 +11,11 @@ interface Sentence {
   audioData: object;
   audioDataHelp: object;
   editted: boolean;
+  orderedTiming: object[];
+  helpTiming: object[];
 }
 
 const sentences = [
 ]
 
-export { Sentence, sentences, /*focussedSentence*/ }
+export { Sentence, sentences }

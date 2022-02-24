@@ -8,8 +8,8 @@ import { sentences } from '../data/sentences'
 })
 
 export class TtsService {
-  private apiUrl = "https://scealai-dashboard-server.herokuapp.com/api/v1/getIrishSynthesis"
-  //private apiUrl = "http://localhost:5000/api/v1/getIrishSynthesis"
+  //private apiUrl = "https://scealai-dashboard-server.herokuapp.com/api/v1/getIrishSynthesis"
+  private apiUrl = "http://localhost:5000/api/v1/getIrishSynthesis"
   constructor(private http:HttpClient) { }
 
   getTTS = text => {

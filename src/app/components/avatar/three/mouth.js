@@ -4,20 +4,29 @@ import { lenMorphs, head } from './main'
 import { updateAvatarState, avatarStates, speakingSpeedMultDict } from './config'
 import phonemeToVisemeMap from './phonemeToViseme.js'
 import { sentences } from '../../../data/sentences'
+import { flashAvatar } from './flash'
 
 let visemeCount = 0
 let activeSentence
 let a
-const startMouthing = () => {
-	updateAvatarState('speaking', true)
-	activeSentence = sentences.find(s => s.readyToSpeak)
-	if (activeSentence !== undefined) {
+let h
+const startSpeaking = (sent) => {
+	updateAvatarState('speaking', true)	
+	activeSentence = sentences.find(s => s.id === avatarStates.activeSentenceID)
+	console.log('activeSentence:', activeSentence)
+	//if (activeSentence !== undefined) {
+		//a = document.getElementById('sentAudio' + activeSentence.id)
+	visemeCount = 0;
+	if (sent) {
 		a = document.getElementById('sentAudio' + activeSentence.id)
-		visemeCount = 0;
 		a.play()
-		mouthPhrase();
-	} else {
-		console.log('activeSentence undefined')
+		setTimeout( () => {
+			mouthPhrase();
+		}, 300 )
+	} else { // if help message
+		let h = document.getElementById('helpAudio' + activeSentence.id)
+		h.play()
+		mouthHelp();
 	}
 }
 
@@ -33,24 +42,31 @@ const mouthPhrase = () => {
 		a.pause();
 		a.playbackRate = 0.25
 		updateAvatarState('speakingSpeed', 0.25)
-		setTimeout( () => {
-			mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.orderedTiming[visemeCount].phone], dur)
-			a.play()
-		}, 250 )
+		mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.orderedTiming[visemeCount].phone], dur, true)
+		a.play()
 	} else if ( !activeSentence.orderedTiming[visemeCount].error  && avatarStates.speakingSpeed !== 1 ){
 		a.pause();
 		a.playbackRate = 1
 		updateAvatarState('speakingSpeed', 1)
-		setTimeout( () => {
-			mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.orderedTiming[visemeCount].phone], dur)
-			a.play()
-		}, 250 )
+		mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.orderedTiming[visemeCount].phone], dur, true)
+		a.play()
 	} else {
-		mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.orderedTiming[visemeCount].phone], dur)
+		mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.orderedTiming[visemeCount].phone], dur, true)
 	}
 }
 
-const mouthViseme = (vis, duration) => {
+const mouthHelp = () => {
+	let dur = 0
+	if (visemeCount === 0) {
+		dur = parseFloat(activeSentence.helpTiming[visemeCount].end)*speakingSpeedMultDict[avatarStates.speakingSpeed] / avatarStates.speakingSpeed
+	} else {
+		dur = (parseFloat(activeSentence.helpTiming[visemeCount].end)-parseFloat(activeSentence.helpTiming[visemeCount-1].end))*speakingSpeedMultDict[avatarStates.speakingSpeed] / avatarStates.speakingSpeed
+	}
+
+	mouthViseme("viseme_" + phonemeToVisemeMap[activeSentence.helpTiming[visemeCount].phone], dur, false)
+}
+
+const mouthViseme = (vis, duration, sent) => {
 	let faceMorphsTo = new Array(lenMorphs).fill(0);
 	faceMorphsTo[head.morphTargetDictionary[vis]] = 0.4;
 	let mouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, duration)
@@ -58,24 +74,40 @@ const mouthViseme = (vis, duration) => {
 		.start()
 
 	mouthingIn.onComplete( function() {
-		if (visemeCount < activeSentence.orderedTiming.length-1) {
-			visemeCount += 1;
-			mouthPhrase()
+		if (sent) {
+			if (visemeCount < activeSentence.orderedTiming.length-1) {
+				visemeCount += 1;
+				mouthPhrase()
+			} else {
+				lastPhone()
+			}
 		} else {
-			faceMorphsTo = new Array(lenMorphs).fill(0);
-			let lastMouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, 500)
-				.easing(TWEEN.Easing.Cubic.InOut)
-				.start()
-			lastMouthingIn.onComplete( function() {
-
-				a.playbackRate = 1
-				updateAvatarState('speakingSpeed', 1)
-				updateAvatarState('speaking', false)
-				activeSentence.readyToSpeak = false;
-			})
+			if (visemeCount < activeSentence.helpTiming.length-1) {
+				visemeCount += 1;
+				mouthHelp()
+			} else {
+				lastPhone()
+			}
 		}
+		//} else {
+		
 	})
+
+	const lastPhone = () => {
+		faceMorphsTo = new Array(lenMorphs).fill(0);
+		let lastMouthingIn = new TWEEN.Tween(head.morphTargetInfluences).to(faceMorphsTo, 500)
+			.easing(TWEEN.Easing.Cubic.InOut)
+			.start()
+		lastMouthingIn.onComplete( function() {
+			updateAvatarState('speaking', false)
+			activeSentence.readyToSpeak = false;
+			if (sent) {
+				if (activeSentence.readyToSpeakHelp) flashAvatar()
+			}
+		})
+	}
+		
 }
 
 //window.startMouthing = startMouthing
-export default startMouthing
+export { startSpeaking }

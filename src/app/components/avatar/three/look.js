@@ -3,7 +3,7 @@ import { avatarStates, updateAvatarState } from './config'
 import * as THREE from 'three'
 import { blink } from './blink'
 import { headBone, spine1, spine2, leftEye, rightEye } from './main'
-import startMouthing from './mouth'
+import { startSpeaking } from './mouth'
 
 const avatarLookAt = (what, duration) => {
 	try {
@@ -39,7 +39,7 @@ const avatarLookAt = (what, duration) => {
 
 		headBoneRot.onComplete( () => {
 			if ( what === 'camera' ) {
-				startMouthing();
+				startSpeaking(true);
 				avatarStates.lookingAtBoard = false;
 			}
 		})

@@ -3,11 +3,9 @@ import { sentences, Sentence, /*focussedSentence*/ } from '../../data/sentences'
 import { TtsService } from '../../services/tts.service'
 import { GramadoirService } from '../../services/gramadoir.service'
 import { WrittenAttemptService } from '../../services/written-attempt.service'
-import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
-import { avatarReadyToSpeak } from '../avatar/three/main'
-import { avatarLookAt } from '../avatar/three/look'
-import { avatarStates } from '../avatar/three/config'
-import startMouthing from '../avatar/three/mouth'
+import { prepareAudioWithGramadoirCheck, prepareAudioForHelp } from './utils/prepareAudio.js'
+import { avatarStates, updateAvatarState } from '../avatar/three/config'
+import { avatarControl } from '../avatar/three/control'
 
 @Component({
   selector: 'app-text-box',
@@ -52,6 +50,7 @@ export class TextBoxComponent implements OnInit {
       // on any other key, it will change the sentence and need to be synthesised again when Entered
       if (this.sentence.readyToSpeak) {
           this.sentence.readyToSpeak = false;
+          this.sentence.readyToSpeakHelp = false;
       }
     }
 
@@ -61,12 +60,16 @@ export class TextBoxComponent implements OnInit {
     
     //reset all sentences so none highlighted
     sentences.map(s => s.readyToSpeak = false)
+    updateAvatarState('activeSentenceID', this.sentence.id)
     this.sentence.focussed = true;
 
     // only speak a sentence on the following conditions when clicked
     if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
       this.sentence.readyToSpeak = true
-      startMouthing()
+      if (this.sentence.audioDataHelp !== undefined) {
+          this.sentence.readyToSpeakHelp = true;
+      }
+      avatarControl('start speaking')
     }
   }
 
@@ -76,24 +79,37 @@ export class TextBoxComponent implements OnInit {
 
   changeSentence = () => {
     this.sentence.readyToSpeak = false;
+    this.sentence.readyToSpeakHelp = false;
     this.sentence.editted = true;
   }
 
   arrowSentence = up => {
+    console.log('this.sentence.id:', this.sentence.id)
     this.sentence.focussed = false;
     this.sentence.readyToSpeak = false;
+    this.sentence.readyToSpeakHelp = false;
     let nextSentenceID;
     let nextSentence;
     if (up) {
-      nextSentenceID = this.sentence.id - 1
+      if (!this.firstSentence()) {
+        nextSentenceID = this.sentence.id - 1
+      }
     } else {
-      nextSentenceID = this.sentence.id + 1
+      if (!this.lastSentence()) {
+        nextSentenceID = this.sentence.id + 1
+      }
     }
-    nextSentence = sentences.find(s => s.id === nextSentenceID)
-    document.getElementById('sentence_' + nextSentenceID).focus()
-    if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
-      nextSentence.readyToSpeak = true
-      startMouthing()
+    if (nextSentenceID !== undefined) {
+      nextSentence = sentences.find(s => s.id === nextSentenceID)
+      document.getElementById('sentence_' + nextSentenceID).focus()
+      if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
+        updateAvatarState('activeSentenceID', nextSentenceID) 
+        nextSentence.readyToSpeak = true
+        avatarControl("start speaking")
+        if (nextSentence.audioDataHelp !== undefined) {
+          nextSentence.readyToSpeakHelp = true
+        }
+      }
     }
   }
 
@@ -117,34 +133,58 @@ export class TextBoxComponent implements OnInit {
     if (!this.sentence.awaitingTts && !this.sentence.awaitingGramadoir) {
       this.sentence.readyToSpeak = true;
       prepareAudioWithGramadoirCheck(this.sentence.id)
-      avatarLookAt('camera', 1500 )
+      avatarControl("look at camera")
     }
+  }
+
+  punct = /[()'\[\]‘’]/g
+  stops = /[\.\?!]/g
+  cleanTextForTTS = t => {
+    let sentenceWithoutPunctuation = t.replace(this.stops, ", ")
+    let sentenceWithoutStops = sentenceWithoutPunctuation.replace(this.punct, "")
+    return sentenceWithoutStops
   }
 
   enterSentence = () => {
     if ( this.sentence.text !== "" && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
       this.sentence.editted = false
-      avatarLookAt('board', 1500)
+      avatarControl("look at board")
       this.sentence.awaitingTts = true;
       this.sentence.awaitingGramadoir = true;
       sentences.map( s => s.readyToSpeak = false)
+      updateAvatarState('activeSentenceID', this.sentence.id)
 
-      // replace stops in text with commas as tts doesn't do them.
-      let re = /[\.\?!]/g
-      let comma = ", "
-      let sentenceWithoutEndStops = this.sentence.text.replace(re, comma)
       this.gramadoirService.getGramadoir(this.sentence.text).subscribe((g) => {
         this.sentence['errors'] = g
+        //console.log('errors:', g)
         this.sentence.awaitingTts = false;
         this.speakNow()
+        if (g.length !== 0) {
+          let helpMessage = ""
+          g.forEach((e, i) => {
+            helpMessage += e['errortext'] + ", " + e['msg']
+            if ( i < g.length - 1 ) {
+              helpMessage += ", agus, "
+            }
+          })
+          console.log('helpMessage:', helpMessage)
+          let cleanedHelpMessage = this.cleanTextForTTS(helpMessage)
+          console.log('cleanedHelpMessage:', cleanedHelpMessage)
+          this.ttsService.getTTS(cleanedHelpMessage).subscribe((htts) => {
+            this.sentence['audioDataHelp'] = htts
+            this.sentence.readyToSpeakHelp = true;
+            prepareAudioForHelp(this.sentence.id)
+          })
+        }
       })
-      this.ttsService.getTTS(sentenceWithoutEndStops).subscribe((tts) => {
+      let cleanedSentence = this.cleanTextForTTS(this.sentence.text)
+      this.ttsService.getTTS(cleanedSentence).subscribe((tts) => {
         this.sentence['audioData'] = tts
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
       })
       this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
-        console.log('sendWrittenAttempt:', swa)
+        //console.log('sendWrittenAttempt:', swa)
       })
 
       this.sentence.focussed = false;

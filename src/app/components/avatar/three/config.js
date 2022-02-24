@@ -4,8 +4,8 @@ const avatarStates = {
 	blinking: false,
 	speakingSpeed: 1,
 	mouseHover: false,
-	activeSentence: null,
-	focalPoint: null
+	activeSentenceID: null,
+	focalPoint: null,
 }
 
 const updateAvatarState = (state, value) => {
