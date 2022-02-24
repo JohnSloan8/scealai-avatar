@@ -5,8 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
   providedIn: 'root'
 })
 export class GramadoirService {
-  private apiUrl = "https://scealai-dashboard-server.herokuapp.com/api/v1/getIrishGramadoirCheck"
-  //private apiUrl = "http://localhost:5000/api/v1/getIrishGramadoirCheck"
+  //private apiUrl = "https://scealai-dashboard-server.herokuapp.com/api/v1/getIrishGramadoirCheck"
+  private apiUrl = "http://localhost:5000/api/v1/getIrishGramadoirCheck"
   constructor(private http:HttpClient) { }
 
   getGramadoir = text => {
