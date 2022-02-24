@@ -15,14 +15,14 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    console.log('starting...')
-    localStorage.setItem('token', '')
-    setTimeout(() => {
-      this.tokenService.retrieveToken().subscribe((t) => {
-        console.log('token:', t.jwt)
-        localStorage.setItem('token', t.jwt)
-      })
-    }, 2000)
+    //console.log('starting...')
+    //localStorage.setItem('token', '')
+    //setTimeout(() => {
+      //this.tokenService.retrieveToken().subscribe((t) => {
+        //console.log('token:', t.jwt)
+        //localStorage.setItem('token', t.jwt)
+      //})
+    //}, 2000)
   }
 
 }

@@ -183,9 +183,9 @@ export class TextBoxComponent implements OnInit {
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
       })
-      this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
+      //this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
         //console.log('sendWrittenAttempt:', swa)
-      })
+      //})
 
       this.sentence.focussed = false;
       let nextSentenceID = this.sentence.id + 1 ;
