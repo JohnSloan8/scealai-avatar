@@ -3,7 +3,7 @@ import { lenMorphs, head } from './main'
 //import { a } from './prepareAudio'
 import { updateAvatarState, avatarStates, speakingSpeedMultDict } from './config'
 import phonemeToVisemeMap from './phonemeToViseme.js'
-import { sentences } from '../../sentences'
+import { sentences } from '../../../data/sentences'
 
 let visemeCount = 0
 let activeSentence

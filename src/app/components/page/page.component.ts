@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { sentences } from '../sentences'
+import { sentences } from '../../data/sentences'
 
 @Component({
   selector: 'app-page',

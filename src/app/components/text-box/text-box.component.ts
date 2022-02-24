@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { sentences, Sentence, /*focussedSentence*/ } from '../sentences'
-import { TtsService } from '../tts.service'
-import { GramadoirService } from '../gramadoir.service'
-import { WrittenAttemptService } from '../api/written-attempt.service'
+import { sentences, Sentence, /*focussedSentence*/ } from '../../data/sentences'
+import { TtsService } from '../../services/tts.service'
+import { GramadoirService } from '../../services/gramadoir.service'
+import { WrittenAttemptService } from '../../api/written-attempt.service'
 import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
 import { avatarReadyToSpeak } from '../avatar/three/main'
 import { avatarLookAt } from '../avatar/three/look'

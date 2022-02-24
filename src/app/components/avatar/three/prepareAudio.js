@@ -1,5 +1,5 @@
 import { updateAvatarState, avatarStates, gramadoirObject } from './config'
-import { sentences } from '../../sentences'
+import { sentences } from '../../../data/sentences'
 
 var a;
 const prepareAudioWithGramadoirCheck = sentId => {
