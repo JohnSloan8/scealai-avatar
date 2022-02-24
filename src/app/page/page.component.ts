@@ -21,7 +21,19 @@ export class PageComponent implements OnInit {
         focussed: false,
         readyToSpeak: false
       })
+
     }
-    setTimeout(function(){document.getElementById('sentence_0').focus()}, 100)
+    setTimeout(function(){
+      let firstTextBox = document.getElementById('sentence_0')
+      let storyBoxContainer: HTMLElement = document.getElementById('storyBoxContainer')
+      storyBoxContainer.addEventListener('click', () => {
+        if (sentences.length === 1) {
+          firstTextBox.focus()
+        } 
+      })
+      firstTextBox.style.height = "100%";
+      firstTextBox.focus()
+
+    }, 100)
   }
 }

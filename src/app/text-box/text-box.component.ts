@@ -69,15 +69,6 @@ export class TextBoxComponent implements OnInit {
   }
 
   changeSentence = () => {
-    //console.log('in change sentence')
-		//let activeSentence = sentences.filter( s => s.focussed )[0]
-    //if ( activeSentence !== undefined ) {
-      //activeSentence.focussed = false;
-    //}
-    //console.log('sentence focussed', this.sentence.id)
-    //if (this.sentenceEndings.includes(this.sentence.text[this.sentence.text.length - 2])) {
-    //    this.sentence.text = this.sentence.text.slice(0, this.sentence.text.length - 2) + ','
-    //}
     this.sentence.readyToSpeak = false;
     this.sentence.editted = true;
   }
@@ -152,17 +143,17 @@ export class TextBoxComponent implements OnInit {
         this.sentence['errors'] = g
         this.sentence.awaitingTts = false;
         this.speakNow()
-        //console.log('gramadoir.sentence:', this.sentence)
+        console.log('gramadoir.sentence:', this.sentence)
       })
       this.ttsService.getTTS(sentenceWithoutEndStops).subscribe((tts) => {
         this.sentence['audioData'] = tts
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
-        //console.log('tts.sentence:', this.sentence)
+        console.log('tts.sentence:', this.sentence)
       })
-      //this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
-        //console.log('sendWrittenAttempt:', swa)
-      //})
+      this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
+        console.log('sendWrittenAttempt:', swa)
+      })
 
       this.sentence.focussed = false;
       let nextSentenceID = this.sentence.id + 1 ;

@@ -18,10 +18,10 @@ export class AppComponent {
     console.log('starting...')
     localStorage.setItem('token', '')
     setTimeout(() => {
-//      this.tokenService.retrieveToken().subscribe((t) => {
-//        console.log('token:', t.jwt)
-//        localStorage.setItem('token', t.jwt)
-//      })
+      this.tokenService.retrieveToken().subscribe((t) => {
+        console.log('token:', t.jwt)
+        localStorage.setItem('token', t.jwt)
+      })
     }, 2000)
   }
 
