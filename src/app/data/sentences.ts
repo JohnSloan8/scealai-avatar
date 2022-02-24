@@ -6,8 +6,10 @@ interface Sentence {
   readyToSpeak: boolean;
   readyToSpeakHelp: boolean;
   awaitingTts: boolean;
+  awaitingTtsHelp: boolean;
   awaitingGramadoir: boolean;
   audioData: object;
+  audioDataHelp: object;
   editted: boolean;
 }
 

@@ -5,7 +5,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
   providedIn: 'root'
 })
 export class WrittenAttemptService {
-  //private apiUrl = "https://warm-reef-17230.herokuapp.com/api/v1/getIrishGramadoirCheck"
   private apiUrl = "http://localhost:1337/api/written-attempts"
   constructor(private http:HttpClient) { }
 

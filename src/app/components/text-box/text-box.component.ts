@@ -2,13 +2,12 @@ import { Component, OnInit, Input } from '@angular/core';
 import { sentences, Sentence, /*focussedSentence*/ } from '../../data/sentences'
 import { TtsService } from '../../services/tts.service'
 import { GramadoirService } from '../../services/gramadoir.service'
-import { WrittenAttemptService } from '../../api/written-attempt.service'
+import { WrittenAttemptService } from '../../services/written-attempt.service'
 import prepareAudioWithGramadoirCheck from '../avatar/three/prepareAudio.js'
 import { avatarReadyToSpeak } from '../avatar/three/main'
 import { avatarLookAt } from '../avatar/three/look'
 import { avatarStates } from '../avatar/three/config'
 import startMouthing from '../avatar/three/mouth'
-//import TWEEN from '@tweenjs/tween.js'
 
 @Component({
   selector: 'app-text-box',
@@ -19,6 +18,7 @@ export class TextBoxComponent implements OnInit {
 
   @Input() sentence!: Sentence;
   audioID: string
+  helpAudioID: string
   constructor(
     private ttsService:TtsService,
     private gramadoirService:GramadoirService,
@@ -28,36 +28,42 @@ export class TextBoxComponent implements OnInit {
 
   ngOnInit(): void {
     this.audioID = "sentAudio" + this.sentence.id
+    this.helpAudioID = "helpAudio" + this.sentence.id
   }
 
   sentenceEndings = ['.', '?', '!']
   onKeyPress = evt => {
-    console.log('key:', evt)
+
+    // Enter causes the text to be synthesised and move the cursor to the next line
     if (evt.key === "Enter") {
       evt.preventDefault()
       this.enterSentence()
+
+    // If the user types a . ! or ? at the end of the sentence, we treat it like and Enter
     } else if (this.sentenceEndings.includes(evt.key)) {
+
+      // If there is already a . ! or ? at the end of the sentence, we don't want one more
       if (this.sentenceEndings.includes(this.sentence.text[this.sentence.text.length-1])) {
         evt.preventDefault()
       }
-      console.log('end key pressed')
       this.enterSentence()
     } else {
 
-    if (this.sentence.readyToSpeak) {
-        this.sentence.readyToSpeak = false;
-    }
+      // on any other key, it will change the sentence and need to be synthesised again when Entered
+      if (this.sentence.readyToSpeak) {
+          this.sentence.readyToSpeak = false;
+      }
     }
 
   }
 
   clickSentence = () => {
+    
+    //reset all sentences so none highlighted
     sentences.map(s => s.readyToSpeak = false)
-    //console.log('this.sentence:', this.sentence)
     this.sentence.focussed = true;
-    console.log('audioData:', this.sentence.audioData)
-    console.log('editted:', this.sentence.editted)
-    console.log('speaking:', avatarStates.speaking)
+
+    // only speak a sentence on the following conditions when clicked
     if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
       this.sentence.readyToSpeak = true
       startMouthing()
@@ -74,32 +80,20 @@ export class TextBoxComponent implements OnInit {
   }
 
   arrowSentence = up => {
+    this.sentence.focussed = false;
+    this.sentence.readyToSpeak = false;
     let nextSentenceID;
     let nextSentence;
     if (up) {
-      if (!this.firstSentence()) {
-        this.sentence.focussed = false;
-        this.sentence.readyToSpeak = false;
-        nextSentenceID = this.sentence.id - 1
-        let nextSentence = sentences.find(s => s.id === nextSentenceID)
-        document.getElementById('sentence_' + nextSentenceID).focus()
-        if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
-          nextSentence.readyToSpeak = true
-          startMouthing()
-        }
-      }
+      nextSentenceID = this.sentence.id - 1
     } else {
-      if (!this.lastSentence()) {
-        this.sentence.focussed = false;
-        this.sentence.readyToSpeak = false;
-        nextSentenceID = this.sentence.id + 1
-        let nextSentence = sentences.find(s => s.id === nextSentenceID)
-        document.getElementById('sentence_' + nextSentenceID).focus()
-        if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
-          nextSentence.readyToSpeak = true
-          startMouthing()
-        }
-      }
+      nextSentenceID = this.sentence.id + 1
+    }
+    nextSentence = sentences.find(s => s.id === nextSentenceID)
+    document.getElementById('sentence_' + nextSentenceID).focus()
+    if (nextSentence.audioData !== undefined && !nextSentence.editted && !avatarStates.speaking) {
+      nextSentence.readyToSpeak = true
+      startMouthing()
     }
   }
 
@@ -135,21 +129,19 @@ export class TextBoxComponent implements OnInit {
       this.sentence.awaitingGramadoir = true;
       sentences.map( s => s.readyToSpeak = false)
 
+      // replace stops in text with commas as tts doesn't do them.
       let re = /[\.\?!]/g
       let comma = ", "
       let sentenceWithoutEndStops = this.sentence.text.replace(re, comma)
-      console.log('sentenceWithoutStops:', sentenceWithoutEndStops) 
       this.gramadoirService.getGramadoir(this.sentence.text).subscribe((g) => {
         this.sentence['errors'] = g
         this.sentence.awaitingTts = false;
         this.speakNow()
-        console.log('gramadoir.sentence:', this.sentence)
       })
       this.ttsService.getTTS(sentenceWithoutEndStops).subscribe((tts) => {
         this.sentence['audioData'] = tts
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
-        console.log('tts.sentence:', this.sentence)
       })
       this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
         console.log('sendWrittenAttempt:', swa)
@@ -175,5 +167,4 @@ export class TextBoxComponent implements OnInit {
       }
     }
   }
-
 }
