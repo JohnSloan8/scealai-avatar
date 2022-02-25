@@ -180,7 +180,7 @@ export class TextBoxComponent implements OnInit {
             this.sentence.readyToSpeakHelp = true;
             prepareAudioForHelp(this.sentence.id)
 	    console.log('avatarFlashed:', this.sentence.avatarFlashed)
-	    if (!this.sentence.avatarFlashed && this.sentence.readyToSpeakHelp) {
+	    if (!this.sentence.avatarFlashed && this.sentence.readyToSpeakHelp && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
 	    	flashAvatar()
 		this.sentence.avatarFlashed = true;
 	    }
