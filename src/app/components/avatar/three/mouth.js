@@ -16,21 +16,20 @@ const startSpeaking = (sent) => {
 	//if (activeSentence !== undefined) {
 		//a = document.getElementById('sentAudio' + activeSentence.id)
 	visemeCount = 0;
+
+	updateAvatarState('speakingSpeed', 1)
+	updateAvatarState('speaking', true)	
 	if (sent) {
 		a = document.getElementById('sentAudio' + activeSentence.id)
 		a.playbackRate = 1
 		a.play()
 		mouthPhrase()
-		updateAvatarState('speaking', true)	
-		updateAvatarState('speakingSpeed', 1)
 	} else { // if help message
 	    if (activeSentence.readyToSpeakHelp) {
 		let h = document.getElementById('helpAudio' + activeSentence.id)
 		h.playbackRate = 1
 		h.play()
 		mouthHelp();
-		updateAvatarState('speaking', true)	
-		updateAvatarState('speakingSpeed', 1)
 	    } else {
 		console.log('no help message to speak')
 	    }

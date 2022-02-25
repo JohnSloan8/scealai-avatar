@@ -52,7 +52,6 @@ export class TextBoxComponent implements OnInit {
       if (this.sentence.readyToSpeak) {
           this.sentence.readyToSpeak = false;
           this.sentence.readyToSpeakHelp = false;
-          this.sentence.avatarFlashed = true;
       }
     }
 
@@ -82,7 +81,6 @@ export class TextBoxComponent implements OnInit {
   changeSentence = () => {
     this.sentence.readyToSpeak = false;
     this.sentence.readyToSpeakHelp = false;
-    this.sentence.avatarFlashed = true;
     this.sentence.editted = true;
   }
 
@@ -91,7 +89,6 @@ export class TextBoxComponent implements OnInit {
     this.sentence.focussed = false;
     this.sentence.readyToSpeak = false;
     this.sentence.readyToSpeakHelp = false;
-    this.sentence.avatarFlashed = true;
     let nextSentenceID;
     let nextSentence;
     if (up) {
@@ -153,6 +150,7 @@ export class TextBoxComponent implements OnInit {
     if ( this.sentence.text !== "" && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
       this.sentence.editted = false
       avatarControl("look at board")
+      this.sentence.avatarFlashed = false;
       this.sentence.awaitingTts = true;
       this.sentence.awaitingGramadoir = true;
       sentences.map( s => s.readyToSpeak = false)
@@ -163,7 +161,10 @@ export class TextBoxComponent implements OnInit {
         //console.log('errors:', g)
         this.sentence.awaitingTts = false;
         this.speakNow()
-        if (g.length !== 0) {
+        if (g.length === 0) {
+	   this.sentence.readyToSpeakHelp = false
+            this.sentence['audioDataHelp'] = undefined
+	} else {
           let helpMessage = ""
           g.forEach((e, i) => {
             helpMessage += e['errortext'] + ", " + e['msg']
@@ -178,7 +179,8 @@ export class TextBoxComponent implements OnInit {
             this.sentence['audioDataHelp'] = htts
             this.sentence.readyToSpeakHelp = true;
             prepareAudioForHelp(this.sentence.id)
-	    if (!this.sentence.avatarFlashed) {
+	    console.log('avatarFlashed:', this.sentence.avatarFlashed)
+	    if (!this.sentence.avatarFlashed && this.sentence.readyToSpeakHelp) {
 	    	flashAvatar()
 		this.sentence.avatarFlashed = true;
 	    }
