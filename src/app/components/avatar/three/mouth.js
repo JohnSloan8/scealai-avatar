@@ -18,14 +18,15 @@ const startSpeaking = (sent) => {
 	visemeCount = 0;
 
 	updateAvatarState('speakingSpeed', 1)
-	updateAvatarState('speaking', true)	
 	if (sent) {
+		updateAvatarState('speaking', true)	
 		a = document.getElementById('sentAudio' + activeSentence.id)
 		a.playbackRate = 1
 		a.play()
 		mouthPhrase()
 	} else { // if help message
 	    if (activeSentence.readyToSpeakHelp) {
+		updateAvatarState('speaking', true)	
 		let h = document.getElementById('helpAudio' + activeSentence.id)
 		h.playbackRate = 1
 		h.play()
