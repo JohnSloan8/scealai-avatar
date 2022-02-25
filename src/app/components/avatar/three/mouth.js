@@ -11,7 +11,6 @@ let activeSentence
 let a
 let h
 const startSpeaking = (sent) => {
-	updateAvatarState('speaking', true)	
 	activeSentence = sentences.find(s => s.id === avatarStates.activeSentenceID)
 	console.log('activeSentence:', activeSentence)
 	//if (activeSentence !== undefined) {
@@ -19,14 +18,22 @@ const startSpeaking = (sent) => {
 	visemeCount = 0;
 	if (sent) {
 		a = document.getElementById('sentAudio' + activeSentence.id)
+		a.playbackRate = 1
 		a.play()
-		setTimeout( () => {
-			mouthPhrase();
-		}, 300 )
+		mouthPhrase()
+		updateAvatarState('speaking', true)	
+		updateAvatarState('speakingSpeed', 1)
 	} else { // if help message
+	    if (activeSentence.readyToSpeakHelp) {
 		let h = document.getElementById('helpAudio' + activeSentence.id)
+		h.playbackRate = 1
 		h.play()
 		mouthHelp();
+		updateAvatarState('speaking', true)	
+		updateAvatarState('speakingSpeed', 1)
+	    } else {
+		console.log('no help message to speak')
+	    }
 	}
 }
 
@@ -102,7 +109,10 @@ const mouthViseme = (vis, duration, sent) => {
 			updateAvatarState('speaking', false)
 			activeSentence.readyToSpeak = false;
 			if (sent) {
-				if (activeSentence.readyToSpeakHelp) flashAvatar()
+				if (activeSentence.readyToSpeakHelp && !activeSentence.avatarFlashed) {
+					flashAvatar(activeSentence)
+					activeSentence.avatarFlashed = true; 
+				}
 			}
 		})
 	}

@@ -10,9 +10,9 @@ export class TokenService {
   constructor(private http:HttpClient) { }
 
   retrieveToken = () => {
-    return this.http.post<any>(this.apiUrl, { 
-      "identifier": "testUser",
-      "password": "testUserPass1"
-    })
+    //return this.http.post<any>(this.apiUrl, { 
+      //"identifier": "testUser",
+      //"password": "testUserPass1"
+    //})
   }
 }

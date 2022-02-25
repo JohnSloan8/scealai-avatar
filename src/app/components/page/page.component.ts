@@ -31,7 +31,6 @@ export class PageComponent implements OnInit {
           firstTextBox.focus()
         } 
       })
-      firstTextBox.style.height = "100%";
       firstTextBox.focus()
 
     }, 100)

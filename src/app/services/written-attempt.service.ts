@@ -5,11 +5,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
   providedIn: 'root'
 })
 export class WrittenAttemptService {
-  private apiUrl = "http://localhost:1337/api/written-attempts"
-  constructor(private http:HttpClient) { }
+  //private apiUrl = "http://localhost:1337/api/written-attempts"
+  //constructor(private http:HttpClient) { }
 
-  sendWrittenAttempt = text => {
-    return this.http.post<any>(this.apiUrl, {"data": {"text": text }})
-  }
+  //sendWrittenAttempt = text => {
+    //return this.http.post<any>(this.apiUrl, {"data": {"text": text }})
+  //}
 
 }

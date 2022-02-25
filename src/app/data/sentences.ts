@@ -5,6 +5,7 @@ interface Sentence {
   focussed: boolean;
   readyToSpeak: boolean;
   readyToSpeakHelp: boolean;
+  avatarFlashed: boolean;
   awaitingTts: boolean;
   awaitingTtsHelp: boolean;
   awaitingGramadoir: boolean;

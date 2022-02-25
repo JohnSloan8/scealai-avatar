@@ -6,6 +6,7 @@ import { WrittenAttemptService } from '../../services/written-attempt.service'
 import { prepareAudioWithGramadoirCheck, prepareAudioForHelp } from './utils/prepareAudio.js'
 import { avatarStates, updateAvatarState } from '../avatar/three/config'
 import { avatarControl } from '../avatar/three/control'
+import { flashAvatar } from '../avatar/three/flash'
 
 @Component({
   selector: 'app-text-box',
@@ -51,6 +52,7 @@ export class TextBoxComponent implements OnInit {
       if (this.sentence.readyToSpeak) {
           this.sentence.readyToSpeak = false;
           this.sentence.readyToSpeakHelp = false;
+          this.sentence.avatarFlashed = true;
       }
     }
 
@@ -80,6 +82,7 @@ export class TextBoxComponent implements OnInit {
   changeSentence = () => {
     this.sentence.readyToSpeak = false;
     this.sentence.readyToSpeakHelp = false;
+    this.sentence.avatarFlashed = true;
     this.sentence.editted = true;
   }
 
@@ -88,6 +91,7 @@ export class TextBoxComponent implements OnInit {
     this.sentence.focussed = false;
     this.sentence.readyToSpeak = false;
     this.sentence.readyToSpeakHelp = false;
+    this.sentence.avatarFlashed = true;
     let nextSentenceID;
     let nextSentence;
     if (up) {
@@ -174,6 +178,10 @@ export class TextBoxComponent implements OnInit {
             this.sentence['audioDataHelp'] = htts
             this.sentence.readyToSpeakHelp = true;
             prepareAudioForHelp(this.sentence.id)
+	    if (!this.sentence.avatarFlashed) {
+	    	flashAvatar()
+		this.sentence.avatarFlashed = true;
+	    }
           })
         }
       })
