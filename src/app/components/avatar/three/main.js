@@ -95,7 +95,7 @@ function loadIndividualGLTF() {
 				headBone = object;
 			}
       else if (object.name =="Wolf3D_Head") {
-        console.log('MorphTargetDictionary:', object.morphTargetDictionary)
+        //console.log('MorphTargetDictionary:', object.morphTargetDictionary)
         head = object
 				lenMorphs = head.morphTargetInfluences.length;
       } else if (object.name === "Spine") {

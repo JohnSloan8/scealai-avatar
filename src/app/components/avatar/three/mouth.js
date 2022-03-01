@@ -12,7 +12,7 @@ let a
 let h
 const startSpeaking = (sent) => {
 	activeSentence = sentences.find(s => s.id === avatarStates.activeSentenceID)
-	console.log('activeSentence:', activeSentence)
+	//console.log('activeSentence:', activeSentence)
 	//if (activeSentence !== undefined) {
 		//a = document.getElementById('sentAudio' + activeSentence.id)
 	visemeCount = 0;
@@ -32,7 +32,7 @@ const startSpeaking = (sent) => {
 		h.play()
 		mouthHelp();
 	    } else {
-		console.log('no help message to speak')
+		//console.log('no help message to speak')
 	    }
 	}
 }

@@ -47,7 +47,6 @@ export class TextBoxComponent implements OnInit {
       }
       this.enterSentence()
     } else {
-
       // on any other key, it will change the sentence and need to be synthesised again when Entered
       if (this.sentence.readyToSpeak) {
           this.sentence.readyToSpeak = false;
@@ -79,8 +78,6 @@ export class TextBoxComponent implements OnInit {
   }
 
   changeSentence = () => {
-    this.sentence.readyToSpeak = false;
-    this.sentence.readyToSpeakHelp = false;
     this.sentence.editted = true;
   }
 
@@ -172,18 +169,18 @@ export class TextBoxComponent implements OnInit {
               helpMessage += ", agus, "
             }
           })
-          console.log('helpMessage:', helpMessage)
+          //console.log('helpMessage:', helpMessage)
           let cleanedHelpMessage = this.cleanTextForTTS(helpMessage)
-          console.log('cleanedHelpMessage:', cleanedHelpMessage)
+          //console.log('cleanedHelpMessage:', cleanedHelpMessage)
           this.ttsService.getTTS(cleanedHelpMessage).subscribe((htts) => {
             this.sentence['audioDataHelp'] = htts
             this.sentence.readyToSpeakHelp = true;
             prepareAudioForHelp(this.sentence.id)
-	    console.log('avatarFlashed:', this.sentence.avatarFlashed)
-	    if (!this.sentence.avatarFlashed && this.sentence.readyToSpeakHelp && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
-	    	flashAvatar()
-		this.sentence.avatarFlashed = true;
-	    }
+			      //console.log('avatarFlashed:', this.sentence.avatarFlashed)
+            if (!this.sentence.avatarFlashed && this.sentence.readyToSpeakHelp && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
+              flashAvatar()
+              this.sentence.avatarFlashed = true;
+            }
           })
         }
       })
