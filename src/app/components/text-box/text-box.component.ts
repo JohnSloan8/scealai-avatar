@@ -38,7 +38,7 @@ export class TextBoxComponent implements OnInit {
 
     // If the user types a . ! or ? at the end of the sentence, we treat it like and Enter
     } else if (this.sentenceEndings.includes(evt.key)) {
-
+      this.dontChange = true;
       // If there is already a . ! or ? at the end of the sentence, we don't want one more
       if (this.sentenceEndings.includes(this.sentence.text[this.sentence.text.length-1])) {
         evt.preventDefault()
@@ -55,6 +55,9 @@ export class TextBoxComponent implements OnInit {
   }
 
   clickSentence = () => {
+    console.log('activeSentenceID:', avatarStates.activeSentenceID)
+    console.log('speaking:', avatarStates.speaking)
+    console.log('this.sentence.id:', this.sentence.id)
     if ( !(avatarStates.speaking && avatarStates.activeSentenceID === this.sentence.id )) {
       //reset all sentences so none highlighted
       sentences.map(s => s.readyToSpeak = false)
@@ -62,6 +65,8 @@ export class TextBoxComponent implements OnInit {
       this.sentence.focussed = true;
 
       // only speak a sentence on the following conditions when clicked
+      console.log('audioData:', this.sentence.audioData)
+      console.log('editted:', this.sentence.editted)
       if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
         this.sentence.readyToSpeak = true
         if (this.sentence.audioDataHelp !== undefined) {
@@ -76,10 +81,14 @@ export class TextBoxComponent implements OnInit {
     this.sentence.focussed = false;
   }
 
+  dontChange = false;
   changeSentence = () => {
-    this.sentence.editted = true;
-    this.sentence.readyToSpeak = false;
-    this.sentence.readyToSpeakHelp = false;
+    if (!this.dontChange) {
+      this.sentence.editted = true;
+      this.sentence.readyToSpeak = false;
+      this.sentence.readyToSpeakHelp = false;
+      this.dontChange = true;
+    }
   }
 
   arrowSentence = up => {
@@ -160,9 +169,9 @@ export class TextBoxComponent implements OnInit {
         this.sentence.awaitingTts = false;
         this.speakNow()
         if (g.length === 0) {
-	   this.sentence.readyToSpeakHelp = false
+	          this.sentence.readyToSpeakHelp = false
             this.sentence['audioDataHelp'] = undefined
-	} else {
+	      } else {
           let helpMessage = ""
           g.forEach((e, i) => {
             helpMessage += e['errortext'] + ", " + e['msg']
@@ -170,14 +179,11 @@ export class TextBoxComponent implements OnInit {
               helpMessage += ", agus, "
             }
           })
-          //console.log('helpMessage:', helpMessage)
           let cleanedHelpMessage = this.cleanTextForTTS(helpMessage)
-          //console.log('cleanedHelpMessage:', cleanedHelpMessage)
           this.ttsService.getTTS(cleanedHelpMessage).subscribe((htts) => {
             this.sentence['audioDataHelp'] = htts
             this.sentence.readyToSpeakHelp = true;
             prepareAudioForHelp(this.sentence.id)
-			      //console.log('avatarFlashed:', this.sentence.avatarFlashed)
             if (!this.sentence.avatarFlashed && this.sentence.readyToSpeakHelp && !avatarStates.lookingAtBoard && !avatarStates.speaking) {
               flashAvatar()
               this.sentence.avatarFlashed = true;

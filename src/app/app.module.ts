@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TextBoxComponent } from './components/text-box/text-box.component';
+import { AvatarClassroomComponent } from './components/avatar-classroom/avatar-classroom.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { TextBoxComponent } from './components/text-box/text-box.component';
     PageComponent,
     AvatarComponent,
     TextBoxComponent,
+    AvatarClassroomComponent,
   ],
   imports: [
     BrowserModule,
