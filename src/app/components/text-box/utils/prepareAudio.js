@@ -54,29 +54,11 @@ const createHelpTimings = (sentID) => {
     let helpTimings = []
     sentences[sentID].audioDataHelp.timing.forEach( word => {
         if ( word.word !== "SILENCE_TOKEN" ) {
-          //if (errorNo < sentences[sentID].errors.length) {
-            //if ( sentences[sentID].errors[errorNo].fromx <= wordOnset && wordOnset <= sentences[sentID].errors[errorNo].tox ) {
-                //errorPhone = true
-                //currentlyTrue = true
-            //} else {
-                //errorPhone = false
-                //if ( currentlyTrue ) {
-                    //currentlyTrue = false
-                    //errorNo += 1
-                //}
-            //}
-          //} else {
-            //errorPhone = false;
-            //currentlyTrue = false
-          //}
           word.phones.forEach(p => {
-              //p.error = errorPhone
               helpTimings.push(p)
           })
-          //wordOnset += word.word.length + 1
         }
     })
-    console.log('helpTimings:', helpTimings)
     return helpTimings
 }
 export { prepareAudioWithGramadoirCheck, prepareAudioForHelp }

@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { sentences, Sentence, /*focussedSentence*/ } from '../../data/sentences'
 import { TtsService } from '../../services/tts.service'
 import { GramadoirService } from '../../services/gramadoir.service'
-import { WrittenAttemptService } from '../../services/written-attempt.service'
 import { prepareAudioWithGramadoirCheck, prepareAudioForHelp } from './utils/prepareAudio.js'
 import { avatarStates, updateAvatarState } from '../avatar/three/config'
 import { avatarControl } from '../avatar/three/control'
@@ -21,7 +20,6 @@ export class TextBoxComponent implements OnInit {
   constructor(
     private ttsService:TtsService,
     private gramadoirService:GramadoirService,
-    private writtenAttemptService:WrittenAttemptService,
   ) { 
   }
 
@@ -57,19 +55,20 @@ export class TextBoxComponent implements OnInit {
   }
 
   clickSentence = () => {
-    
-    //reset all sentences so none highlighted
-    sentences.map(s => s.readyToSpeak = false)
-    updateAvatarState('activeSentenceID', this.sentence.id)
-    this.sentence.focussed = true;
+    if ( !(avatarStates.speaking && avatarStates.activeSentenceID === this.sentence.id )) {
+      //reset all sentences so none highlighted
+      sentences.map(s => s.readyToSpeak = false)
+      updateAvatarState('activeSentenceID', this.sentence.id)
+      this.sentence.focussed = true;
 
-    // only speak a sentence on the following conditions when clicked
-    if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
-      this.sentence.readyToSpeak = true
-      if (this.sentence.audioDataHelp !== undefined) {
-          this.sentence.readyToSpeakHelp = true;
+      // only speak a sentence on the following conditions when clicked
+      if (this.sentence.audioData !== undefined && !this.sentence.editted && !avatarStates.speaking) {
+        this.sentence.readyToSpeak = true
+        if (this.sentence.audioDataHelp !== undefined) {
+            this.sentence.readyToSpeakHelp = true;
+        }
+        avatarControl('start speaking')
       }
-      avatarControl('start speaking')
     }
   }
 
@@ -79,6 +78,8 @@ export class TextBoxComponent implements OnInit {
 
   changeSentence = () => {
     this.sentence.editted = true;
+    this.sentence.readyToSpeak = false;
+    this.sentence.readyToSpeakHelp = false;
   }
 
   arrowSentence = up => {
@@ -190,9 +191,6 @@ export class TextBoxComponent implements OnInit {
         this.sentence.awaitingGramadoir = false;
         this.speakNow()
       })
-      //this.writtenAttemptService.sendWrittenAttempt(this.sentence.text).subscribe((swa) => {
-        //console.log('sendWrittenAttempt:', swa)
-      //})
 
       this.sentence.focussed = false;
       let nextSentenceID = this.sentence.id + 1 ;
