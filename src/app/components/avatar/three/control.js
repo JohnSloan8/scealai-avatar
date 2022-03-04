@@ -1,4 +1,5 @@
 import { startSpeaking } from "./mouth"
+import { avatarLookAt } from "./look"
 
 const avatarControl = controlType => {
 

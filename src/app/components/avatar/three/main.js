@@ -101,6 +101,8 @@ function loadIndividualGLTF() {
 				avatarBody['leftEye'] = object;
 			} else if (object.name === "RightEye") {
 				avatarBody['rightEye'] = object;
+			} else if (object.name === 'Wolf3D_Outfit_Top') {
+				avatarBody['Wolf3D_Outfit_Top'] = object;
 			}
 		})
 		//window.model = model
