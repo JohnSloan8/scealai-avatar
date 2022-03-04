@@ -8,11 +8,17 @@ const avatarStates = {
 	focalPoint: null,
 }
 
+const avatarBody = {
+
+}
+
+var lenMorphs
+
 const updateAvatarState = (state, value) => {
 	avatarStates[state] = value
 }
 
-var bodyPartsList = []
+//var bodyPartsList = []
 
 const speakingSpeedMultDict = {
 	1.25: 825,
@@ -25,4 +31,4 @@ const speakingSpeedMultDict = {
 	0.1: 928
 }
 
-module.exports = { bodyPartsList, updateAvatarState, avatarStates, speakingSpeedMultDict }
+module.exports = { lenMorphs, avatarBody, updateAvatarState, avatarStates, speakingSpeedMultDict }

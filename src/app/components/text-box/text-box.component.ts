@@ -39,12 +39,11 @@ export class TextBoxComponent implements OnInit {
     // If the user types a . ! or ? at the end of the sentence, we treat it like and Enter
     } else if (this.sentenceEndings.includes(evt.key)) {
 
-      this.dontChange = true;
       // If there is already a . ! or ? at the end of the sentence, we don't want one more
       if (this.sentenceEndings.includes(this.sentence.text[this.sentence.text.length-1])) {
         evt.preventDefault()
       }
-      this.enterSentence()
+      setTimeout( () => {this.enterSentence() }, 100) // allow to register so changeSentence works
     } else {
       // on any other key, it will change the sentence and need to be synthesised again when Entered
       if (this.sentence.readyToSpeak) {
@@ -77,14 +76,10 @@ export class TextBoxComponent implements OnInit {
     this.sentence.focussed = false;
   }
 
-  dontChange = false;
   changeSentence = () => {
-    if (!this.dontChange) {
-      this.sentence.editted = true;
-      this.sentence.readyToSpeak = false;
-      this.sentence.readyToSpeakHelp = false;
-      this.dontChange = true;
-    }
+    this.sentence.editted = true;
+    this.sentence.readyToSpeak = false;
+    this.sentence.readyToSpeakHelp = false;
   }
 
   arrowSentence = up => {

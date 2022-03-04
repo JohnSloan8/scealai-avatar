@@ -4,7 +4,7 @@ import * as THREE from 'three'
 //import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { startSpeaking } from './mouth'
 import { startRandomBlink } from './blink'
-import { bodyPartsList, avatarStates, updateAvatarState } from './config'
+import { lenMorphs, avatarBody, avatarStates, updateAvatarState } from './config'
 import { randomNeckTurn, randomSway } from './sway'
 import { avatarLookAt } from './look'
 const TWEEN = require('@tweenjs/tween.js')
@@ -29,7 +29,7 @@ export default function init() {
 	//setUpAvatar();
 }
 
-var gltfLoader, model, controls, container, scene, camera, renderer, hemiLight, dirLight, lenMorphs
+var gltfLoader, model, controls, container, scene, camera, renderer, hemiLight, dirLight
 function loadScene() {
 	container = document.getElementById("avatarCanvas");
 	//container.appendChild( stats.dom )
@@ -64,17 +64,6 @@ function loadScene() {
 	loadIndividualGLTF();
 }
 
-
-var head
-var headBone
-var spine
-var spine1
-var spine2
-var neck
-var leftEye
-var rightEye
-var rightArm
-var leftArm
 function loadIndividualGLTF() {
 
 	gltfLoader = new GLTFLoader();
@@ -86,40 +75,36 @@ function loadIndividualGLTF() {
 		let direction = new THREE.Vector3();
 		let headPos;
 		model.traverse(function(object) {
-			//console.log('name:', object.name
-			if (object.type === "SkinnedMesh") {
-				bodyPartsList.push(object)
-			}
 			if (object.name === "Head") {
 				headPos = object.getWorldPosition(direction)
-				headBone = object;
+				avatarBody['headBone'] = object;
 			}
       else if (object.name =="Wolf3D_Head") {
         //console.log('MorphTargetDictionary:', object.morphTargetDictionary)
-        head = object
-				lenMorphs = head.morphTargetInfluences.length;
+        avatarBody['head'] = object
+				lenMorphs = avatarBody.head.morphTargetInfluences.length;
       } else if (object.name === "Spine") {
-				spine = object;
+				avatarBody['spine'] = object;
       } else if (object.name === "Spine1") {
-				spine1 = object;
+				avatarBody['spine1'] = object;
       } else if (object.name === "Spine2") {
-				spine2 = object;
+				avatarBody['spine2'] = object;
       } else if (object.name === "RightArm") {
-				rightArm = object;
-				rightArm.rotation.x += 0.5
+				avatarBody['rightArm'] = object;
+				avatarBody['rightArm'].rotation.x += 0.5
       } else if (object.name === "LeftArm") {
-				leftArm = object;
-				leftArm.rotation.x += 0.5
+				avatarBody['leftArm'] = object;
+				avatarBody['leftArm'].rotation.x += 0.5
       } else if (object.name === "Neck") {
-				neck = object;
+				avatarBody['neck'] = object;
 			} else if (object.name === "LeftEye") {
-				leftEye = object;
+				avatarBody['leftEye'] = object;
 			} else if (object.name === "RightEye") {
-				rightEye = object;
+				avatarBody['rightEye'] = object;
 			}
 		})
-		window.model = model
-		headBone.rotation.y = 0.3;
+		//window.model = model
+		avatarBody['headBone'].rotation.y = 0.3;
 		camera.position.set(0, headPos.y, 1.7)
 		camera.rotation.set(-0.1, 0.25, 0)
 		//controls = new OrbitControls(camera, renderer.domElement);
@@ -173,5 +158,3 @@ function animate() {
 
 window.addEventListener( 'pointermove', onPointerMove );
 window.addEventListener( 'click', onClick );
-
-export { lenMorphs, head, headBone, neck, spine, spine1, spine2, leftEye, rightEye }
